@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#d42a1c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AlgèbreQuest">
+<meta name="description" content="AlgèbreQuest — Systèmes linéaires, vecteurs, matrices et déterminants pour le cours 201-NYC-05 (Algèbre linéaire et géométrie vectorielle). Gratuit, sans installation.">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="./manifest.json">
+<title>AlgèbreQuest — 201-NYC-05</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+:root{
+  --bg:#faf7f6; --bg2:#fdfbf9; --panel:#ffffff; --panel2:#f6efec; --cell:#f7f1ee;
+  --ink:#161210; --muted:#453b36; --faint:#6f645d; --line:#eddfd9; --line2:#ddccc4;
+  --violet:#d42a1c; --cyan:#3f7a8a; --gold:#bf831a;
+  --ok:#2ea86a; --warn:#c9781e; --bad:#c62828;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:14px;
+}
+/* Forcer le thème CLAIR même si l'appareil/hôte est en mode sombre */
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#faf7f6; --bg2:#fdfbf9; --panel:#ffffff; --panel2:#f6efec; --cell:#f7f1ee;
+    --ink:#161210; --muted:#453b36; --faint:#6f645d; --line:#eddfd9; --line2:#ddccc4;
+    --violet:#d42a1c; --cyan:#3f7a8a; --gold:#bf831a;
+    --ok:#2ea86a; --warn:#c9781e; --bad:#c62828;
+  }
+  html,body{background:#faf7f6 !important; color:#161210 !important;}
+}
+:root[data-theme="dark"]{
+  --bg:#faf7f6; --bg2:#fdfbf9; --panel:#ffffff; --panel2:#f6efec; --cell:#f7f1ee;
+  --ink:#161210; --muted:#453b36; --faint:#6f645d; --line:#eddfd9; --line2:#ddccc4;
+  --violet:#d42a1c; --cyan:#3f7a8a; --gold:#bf831a;
+  --ok:#2ea86a; --warn:#c9781e; --bad:#c62828;
+}
+html[data-theme="dark"], :root[data-theme="dark"] body{background:#faf7f6 !important; color:#161210 !important;}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{color-scheme:light;background:#faf7f6;}
+body{background-color:#faf7f6;}
+input,select,textarea,button{color-scheme:light;}
+body{background:
+    radial-gradient(1200px 700px at 82% -8%, rgba(212,42,28,.16), transparent 60%),
+    radial-gradient(1000px 640px at 6% 110%, rgba(63,122,138,.12), transparent 55%), var(--bg);
+  color:var(--ink); font-family:var(--sans); line-height:1.5; -webkit-font-smoothing:antialiased; min-height:100vh; overflow-x:hidden;}
+#bg{position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:.32; pointer-events:none;}
+.wrap{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:22px 20px 40px;}
+.top{display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap;}
+.brand{display:flex; align-items:center; gap:12px;}
+.sigil{width:42px;height:42px;flex:none;border-radius:12px;background:conic-gradient(from 210deg, var(--violet), var(--cyan), var(--violet));display:grid;place-items:center;box-shadow:0 6px 20px rgba(212,42,28,.35);}
+.sigil svg{width:24px;height:24px}
+.brand h1{font-family:var(--serif);font-weight:600;font-size:1.55rem;margin:0;letter-spacing:-.01em;line-height:1;}
+.brand .chip{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--cyan);border:1px solid var(--line2);padding:2px 7px;border-radius:20px;margin-top:5px;display:inline-block;}
+.brand .sub{display:flex;flex-direction:column;}
+.hud{display:flex;align-items:center;gap:16px;}
+.avatar{position:relative;width:56px;height:56px;flex:none;}
+.avatar .ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--gold) var(--xp,20%), rgba(0,0,0,.09) 0);-webkit-mask:radial-gradient(farthest-side,transparent 68%,#000 70%);mask:radial-gradient(farthest-side,transparent 68%,#000 70%);}
+.avatar .face{position:absolute;inset:7px;border-radius:50%;background:var(--panel2);display:grid;place-items:center;font-size:22px;border:1px solid var(--line);}
+.avatar .lvl{position:absolute;right:-4px;bottom:-4px;background:var(--violet);color:#ffffff;font-family:var(--mono);font-weight:600;font-size:.66rem;padding:2px 6px;border-radius:9px;border:2px solid var(--bg);}
+.stats{display:flex;flex-direction:column;gap:3px;min-width:150px;}
+.stats .row{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted);}
+.stats .row b{color:var(--ink);font-family:var(--mono);font-variant-numeric:tabular-nums;}
+.xpbar{height:7px;border-radius:6px;background:rgba(0,0,0,.08);overflow:hidden;}
+.xpbar>i{display:block;height:100%;width:var(--xp,20%);background:linear-gradient(90deg,var(--gold),#ffe6a1);}
+.streak{font-size:.72rem;color:var(--gold);font-family:var(--mono);}
+
+.map{display:flex;align-items:center;margin:22px 0 6px;padding:12px 14px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto;}
+.node{display:flex;align-items:center;gap:9px;flex:none;}
+.node .dot{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:15px;background:var(--panel2);border:1px solid var(--line2);color:var(--muted);}
+.node.active .dot{background:linear-gradient(160deg,#f0503c,#d42a1c);color:#ffffff;border-color:transparent;box-shadow:0 0 0 3px rgba(212,42,28,.22);}
+.node.active .dot,.node .dot{font-weight:700;}
+.node .nm{font-size:.78rem;white-space:nowrap;}
+.node.active .nm{color:var(--ink);font-weight:600;}
+.node.locked{opacity:.5;}
+.node .nm small{display:block;color:var(--faint);font-size:.64rem;font-family:var(--mono);}
+.chapnode{cursor:pointer;}
+.chapnode:hover .dot{border-color:var(--violet);}
+.node.active .nm small{color:var(--cyan);}
+.link{flex:1 1 26px;min-width:22px;height:2px;margin:0 8px;background:repeating-linear-gradient(90deg,var(--line2) 0 5px,transparent 5px 10px);align-self:center;}
+
+.quest{margin-top:14px;background:linear-gradient(180deg,rgba(212,42,28,.05),transparent 30%),var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 18px 44px rgba(40,50,100,.10);}
+#chap-vec .quest{background:linear-gradient(180deg,rgba(63,122,138,.05),transparent 30%),var(--panel);}
+.qhead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+.eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);}
+.qhead h2{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:.15em 0 0;line-height:1.1;}
+.qmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.badge-pill{font-family:var(--mono);font-size:.72rem;padding:5px 10px;border-radius:20px;border:1px solid var(--line2);color:var(--muted);background:var(--panel2);white-space:nowrap;}
+.badge-pill b{color:var(--ink);}
+.modeToggle{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:3px;}
+.mt{font-family:var(--sans);font-size:.75rem;font-weight:600;padding:5px 11px;border-radius:16px;border:0;background:transparent;color:var(--muted);cursor:pointer;}
+.mt[aria-selected="true"]{background:linear-gradient(160deg,var(--violet),#a81e12);color:#ffffff;}
+
+.grid{display:grid;grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr);gap:22px;margin-top:20px;align-items:start;}
+#chap-vec .grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+@media (max-width:760px){.grid{grid-template-columns:1fr;}}
+.subhead{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;}
+.system{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px;}
+.eqn{font-family:var(--mono);font-size:1.02rem;padding:7px 0;border-bottom:1px dashed var(--line);font-variant-numeric:tabular-nums;letter-spacing:.01em;}
+.eqn:last-child{border-bottom:0;}
+.solnote{margin-top:12px;font-size:.82rem;color:var(--muted);}
+.solvec{font-family:var(--mono);color:var(--cyan);font-weight:600;}
+.goalline{font-size:.82rem;color:var(--muted);margin:0 0 10px;}
+.goalline b{color:var(--violet);}
+
+.matrixwrap{overflow-x:auto;}
+.mstage{display:flex;align-items:stretch;gap:10px;justify-content:center;padding:6px 2px;}
+.rowlabels{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:12px 0;}
+.rowlabels span{height:44px;display:flex;align-items:center;font-family:var(--mono);font-size:.8rem;color:var(--violet);}
+.bracket{width:14px;border:2px solid var(--line2);border-radius:3px;}
+.bracket.l{border-right:0;border-top-right-radius:0;border-bottom-right-radius:0;}
+.bracket.r{border-left:0;border-top-left-radius:0;border-bottom-left-radius:0;}
+.matrix{display:grid;gap:8px 6px;padding:12px 6px;align-items:center;}
+.cell{height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:1.02rem;font-variant-numeric:tabular-nums;background:var(--cell);border:1px solid var(--line);border-radius:9px;color:var(--ink);transition:background .25s,border-color .25s,transform .2s;}
+.cell.aug{background:rgba(63,122,138,.12);border-color:rgba(63,122,138,.38);color:#2f5a66;}
+.cell.pivot-ok{border-color:var(--violet);box-shadow:0 0 0 2px rgba(212,42,28,.18) inset;}
+.cell.next{outline:2px solid var(--gold);outline-offset:1px;animation:pulse 1.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{outline-color:rgba(244,194,90,.9)}50%{outline-color:rgba(244,194,90,.2)}}
+.cell.flash{background:var(--violet);color:#ffffff;transform:translateY(-2px);}
+.vdiv{width:2px;height:44px;background:linear-gradient(var(--line2),transparent,var(--line2));border-radius:2px;margin:0 auto;}
+.frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle;}
+.frac .fn{font-size:.78rem;padding:0 3px;}
+.frac .fd{font-size:.78rem;padding:0 3px;border-top:1.5px solid currentColor;margin-top:1px;}
+.neg{margin-right:1px;}
+.objective{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:.82rem;color:var(--muted);}
+.pips{display:flex;gap:5px;}
+.pips i{width:22px;height:5px;border-radius:3px;background:rgba(0,0,0,.11);}
+.pips i.on{background:var(--violet);}
+
+.console{margin-top:22px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px;}
+.coach{display:none;margin:0 0 14px;padding:12px 14px;border-radius:11px;background:linear-gradient(160deg,rgba(63,122,138,.12),rgba(212,42,28,.09));border:1px solid var(--line2);font-size:.9rem;color:var(--ink);}
+.coach b{color:var(--cyan);}
+.coach .coachtip{display:block;margin-top:3px;color:var(--muted);font-size:.8rem;}
+.coach .coachtip b{color:var(--gold);}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.tab{font-family:var(--sans);font-size:.82rem;padding:7px 13px;border-radius:9px;cursor:pointer;background:var(--panel2);border:1px solid var(--line);color:var(--muted);}
+.tab[aria-selected="true"]{background:linear-gradient(160deg,var(--violet),#a81e12);color:#ffffff;border-color:transparent;font-weight:600;}
+.opexpl{font-size:.8rem;color:var(--muted);margin:0 0 13px;padding:9px 12px;background:rgba(212,42,28,.06);border:1px solid var(--line);border-radius:9px;}
+.opexpl b{color:var(--ink);}
+.opline{display:none;align-items:center;gap:9px;flex-wrap:wrap;font-family:var(--mono);font-size:.92rem;color:var(--muted);}
+.opline.show{display:flex;}
+select,input.k,input.num{font-family:var(--mono);font-size:.92rem;background:var(--cell);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:8px 9px;}
+input.k{width:66px;text-align:center;}
+select{cursor:pointer;}
+.opline .lhs{color:var(--violet);font-weight:600;}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px;}
+button{font-family:var(--sans);font-size:.88rem;font-weight:600;cursor:pointer;border-radius:10px;padding:10px 15px;border:1px solid var(--line2);background:var(--panel2);color:var(--ink);transition:.15s;}
+button:hover{border-color:var(--violet);transform:translateY(-1px);}
+button.primary{background:linear-gradient(160deg,var(--violet),#a81e12);color:#ffffff;border-color:transparent;}
+#chap-vec button.primary{background:linear-gradient(160deg,var(--cyan),#25b7a3);color:#04120f;}
+button.ghost{background:transparent;}
+button.hint{border-color:rgba(244,194,90,.4);color:var(--gold);}
+button.help{border-color:var(--line2);color:var(--muted);}
+button:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.status{margin-top:13px;min-height:1.3em;font-size:.86rem;color:var(--muted);}
+.status.ok{color:var(--ok);}.status.bad{color:var(--bad);}.status.hint{color:var(--gold);}
+
+/* vecteurs */
+.given{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px;}
+.vecrow{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:1.15rem;padding:8px 0;}
+.vecrow .lab{font-weight:600;font-size:1.25rem;}
+.vecrow.u .lab{color:var(--violet);}.vecrow.v .lab{color:var(--cyan);}
+.vecrow .col{display:inline-flex;flex-direction:column;line-height:1.15;border-left:2px solid var(--line2);border-right:2px solid var(--line2);padding:4px 12px;border-radius:3px;}
+.formula{margin-top:12px;font-size:.84rem;color:var(--muted);font-family:var(--mono);background:rgba(63,122,138,.06);border:1px solid var(--line);border-radius:9px;padding:9px 11px;}
+.formula b{color:var(--ink);}
+.plotwrap{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px;}
+#plot{width:100%;height:auto;display:block;border-radius:8px;}
+.steps{margin-top:20px;display:grid;gap:14px;}
+.step{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:15px;transition:.2s;}
+.step.locked{opacity:.45;pointer-events:none;}
+.step.done{border-color:rgba(95,208,138,.4);}
+.step .lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px;display:flex;justify-content:space-between;}
+.step .lbl .chk{color:var(--ok);}
+.step h3{margin:0 0 10px;font-size:1.02rem;font-family:var(--sans);font-weight:600;}
+.answerline{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
+input.num{width:100px;text-align:center;}
+.choices{display:flex;gap:8px;flex-wrap:wrap;}
+.choice{font-family:var(--sans);font-size:.86rem;font-weight:600;padding:9px 14px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);color:var(--ink);cursor:pointer;transition:.15s;}
+#chap-vec .choice:hover{border-color:var(--cyan);transform:translateY(-1px);}
+.choice.good{background:rgba(95,208,138,.2);border-color:var(--ok);color:#d6ffe6;}
+.choice.bad{background:rgba(255,107,138,.18);border-color:var(--bad);}
+
+.win{display:none;margin-top:18px;padding:18px;border-radius:16px;background:linear-gradient(160deg,rgba(212,42,28,.16),rgba(63,122,138,.1));border:1px solid var(--line2);}
+.win.show{display:block;animation:pop .45s ease both;}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+.win h3{font-family:var(--serif);font-weight:600;font-size:1.3rem;margin:0 0 4px;}
+.win .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:.9rem;}
+.win .tag{font-family:var(--mono);background:rgba(0,0,0,.05);padding:4px 10px;border-radius:20px;}
+.win .tag.gold{color:var(--gold);}.win .tag.badge{color:var(--cyan);}
+
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;}
+@media (max-width:640px){.bottom{grid-template-columns:1fr;}}
+.board,.pitch{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;}
+.board h4,.pitch h4{margin:0 0 10px;font-family:var(--serif);font-weight:600;font-size:1.05rem;}
+.lb{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:8px;font-size:.86rem;}
+.lb.me{background:rgba(212,42,28,.12);border:1px solid var(--line2);}
+.lb .rk{font-family:var(--mono);color:var(--faint);width:20px;}.lb .nm{flex:1;}.lb .xp{font-family:var(--mono);color:var(--gold);}
+.lb.me .nm{color:var(--violet);font-weight:600;}
+.pitch{font-size:.86rem;color:var(--muted);}.pitch ul{margin:8px 0 0;padding-left:18px;}.pitch li{margin:5px 0;}.pitch b{color:var(--cyan);}
+footer{margin-top:26px;text-align:center;color:var(--faint);font-size:.76rem;font-family:var(--mono);}
+footer b{color:var(--muted);}
+
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(43,29,24,.32);backdrop-filter:blur(4px);display:grid;place-items:center;padding:20px;}
+.overlay.hidden{display:none;}
+.modal{max-width:540px;width:100%;max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line2);border-radius:18px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.55);}
+.modal .eyebrow{font-family:var(--mono);color:var(--cyan);letter-spacing:.14em;text-transform:uppercase;font-size:.68rem;}
+.modal h3{font-family:var(--serif);font-weight:600;font-size:1.45rem;margin:.2em 0 .5em;text-wrap:balance;}
+.modal p{font-size:.9rem;color:var(--muted);margin:.55em 0;}.modal p b{color:var(--ink);}.modal p em{color:var(--faint);font-style:italic;}
+.modal .fx{font-family:var(--mono);text-align:center;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0;color:var(--ink);}
+.modal ul{margin:.5em 0;padding:0;list-style:none;display:grid;gap:8px;}
+.modal li{font-size:.87rem;color:var(--muted);background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:9px 12px;}
+.modal li b{color:var(--cyan);}.modal li em{color:var(--faint);font-style:italic;}
+.modal .tip{background:rgba(244,194,90,.08);border:1px solid rgba(244,194,90,.3);border-radius:10px;padding:10px 12px;color:var(--gold);font-size:.85rem;margin-top:12px;}
+.modal .tip b{color:#ffe6a1;}
+.tgt{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+.tgt .m{font-family:var(--mono);font-size:.8rem;color:var(--muted);border:1px solid var(--line2);border-radius:8px;padding:8px 12px;background:var(--bg2);letter-spacing:.06em;}
+.tgt .m b{color:var(--violet);}
+.modal .primary{margin-top:18px;width:100%;}
+/* chapitres additionnels : matrices, déterminants, produit vectoriel, droites */
+.mtx{display:inline-grid;gap:6px;padding:8px 10px;border-left:2px solid var(--line2);border-right:2px solid var(--line2);border-radius:3px;font-family:var(--mono);font-variant-numeric:tabular-nums;}
+.mtx .e{width:38px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--cell);border:1px solid var(--line);border-radius:7px;}
+.matline{display:flex;align-items:center;gap:12px;padding:8px 0;flex-wrap:wrap;}
+.matline .lab{font-family:var(--mono);font-weight:600;font-size:1.25rem;color:var(--violet);}
+.fillgrid{display:inline-grid;gap:8px;padding:10px;border-left:2px solid var(--line2);border-right:2px solid var(--line2);border-radius:3px;}
+.fillgrid input{width:54px;height:44px;text-align:center;font-family:var(--mono);font-size:1rem;background:var(--cell);border:1px solid var(--line2);border-radius:8px;color:var(--ink);}
+.fillgrid input.good,.vecfill input.good{border-color:var(--ok);background:rgba(95,208,138,.14);}
+.fillgrid input.bad,.vecfill input.bad{border-color:var(--bad);}
+.vecfill{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;padding:6px 0;}
+.vecfill input{width:64px;height:44px;text-align:center;font-family:var(--mono);font-size:1rem;background:var(--cell);border:1px solid var(--line2);border-radius:8px;color:var(--ink);}
+.vcol{display:inline-flex;flex-direction:column;line-height:1.15;border-left:2px solid var(--line2);border-right:2px solid var(--line2);padding:4px 12px;border-radius:3px;font-family:var(--mono);font-size:1.05rem;text-align:center;}
+.eqbox{font-family:var(--mono);font-size:1.05rem;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--ink);text-align:center;}
+
+/* écran d'accueil */
+.avpick{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0;}
+.avopt{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:var(--panel2);border:1px solid var(--line2);cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;}
+.avopt:hover{transform:translateY(-2px);}
+.avopt[aria-selected="true"]{border-color:var(--violet);box-shadow:0 0 0 3px rgba(212,42,28,.25);background:linear-gradient(160deg,rgba(212,42,28,.2),rgba(63,122,138,.12));}
+.pseudo{width:100%;font-family:var(--sans);font-size:.95rem;background:var(--cell);border:1px solid var(--line2);border-radius:10px;padding:11px 13px;color:var(--ink);}
+.wlabel{font-size:.72rem;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:12px 0 6px;}
+.wbrand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;}
+.wbrand h1{font-family:var(--serif);font-weight:600;font-size:1.7rem;margin:0;line-height:1;}
+
+/* progression (parcours guidé) */
+#modeToggle,#det_toggle{display:none!important;}
+.progbanner{margin:12px 0 0;padding:12px 16px;background:linear-gradient(160deg,rgba(212,42,28,.1),rgba(63,122,138,.06));border:1px solid var(--line2);border-radius:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.progbanner .pb-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;}
+.progbanner .pb-sub{font-size:.8rem;color:var(--muted);font-family:var(--mono);}
+.progbanner .pb-bar{flex:1 1 120px;height:8px;border-radius:6px;background:rgba(0,0,0,.09);overflow:hidden;min-width:100px;}
+.progbanner .pb-bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan));transition:width .3s;}
+.progbanner .pb-stars{color:var(--gold);font-size:.95rem;letter-spacing:1px;}
+.progbanner .pb-rank{font-family:var(--mono);font-size:.72rem;color:var(--gold);border:1px solid var(--line2);padding:3px 8px;border-radius:20px;}
+.progbanner .pb-lvl{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);background:var(--panel2);border:1px solid var(--line2);padding:3px 10px;border-radius:20px;}
+.progbanner .pb-lvl b{color:var(--ink);}
+.progbanner .pb-lvl select{font-family:var(--sans);font-size:.85rem;font-weight:600;color:var(--violet);background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:2px 6px;cursor:pointer;}
+.node .stars{color:var(--gold);font-size:.62rem;letter-spacing:.5px;}
+.chapnode.locked{opacity:.5;cursor:not-allowed;}
+.levelup{position:fixed;inset:0;z-index:60;background:rgba(43,29,24,.38);backdrop-filter:blur(5px);display:none;place-items:center;padding:20px;}
+.levelup.show{display:grid;}
+.lu-card{max-width:420px;width:100%;background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:30px 26px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .5s ease both;}
+.lu-card .big{font-size:2.4rem;}
+.lu-card h3{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:.25em 0 .15em;}
+.lu-card .lu-stars{font-size:1.9rem;letter-spacing:5px;margin:6px 0;}
+.lu-card p{color:var(--muted);font-size:.92rem;}
+.lu-card .primary{margin-top:16px;width:100%;}
+.tut-nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px;}
+.tut-dots{display:flex;gap:6px;}
+.tut-dots i{width:8px;height:8px;border-radius:50%;background:var(--line2);}
+.tut-dots i.on{background:var(--violet);}
+.tut-illus{margin:14px 0 2px;}
+.tut-eqmat{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;font-family:var(--mono);font-size:.95rem;}
+.tut-eqmat .box{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;line-height:1.5;color:var(--ink);}
+.tut-eqmat .arrow{color:var(--violet);font-weight:700;font-size:1.4rem;}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="sigil" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20L12 4l8 16"/><path d="M7.5 14h9"/></svg></div>
+      <div class="sub"><h1>AlgèbreQuest</h1><span class="chip">CÉGEP · 201-NYC-05</span></div>
+    </div>
+    <div class="hud">
+      <div class="avatar" id="avatar" style="--xp:24%"><div class="ring"></div><div class="face">🦉</div><div class="lvl" id="avLvl">N1</div></div>
+      <div class="stats">
+        <div class="row"><span>Niveau <b id="lvlTxt">1</b></span><span><b id="xpTxt">60</b>/250 XP</span></div>
+        <div class="xpbar" id="xpbar" style="--xp:24%"><i></i></div>
+        <div class="row"><span class="streak" id="streak">🔥 Série : 0</span><span>Quêtes : <b id="doneTxt">0</b></span></div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="map" aria-label="Carte des quêtes — clique un chapitre">
+    <div class="node chapnode active" data-chap="gj"><div class="dot">≡</div><div class="nm">Systèmes linéaires<small>en cours</small></div></div>
+    <div class="link"></div>
+    <div class="node chapnode" data-chap="vec"><div class="dot">↗</div><div class="nm">Géométrie vectorielle<small>disponible</small></div></div>
+    <div class="link"></div>
+    <div class="node chapnode" data-chap="mat"><div class="dot">▦</div><div class="nm">Algèbre matricielle<small>disponible</small></div></div>
+    <div class="link"></div>
+    <div class="node chapnode" data-chap="det"><div class="dot">∆</div><div class="nm">Déterminants<small>disponible</small></div></div>
+    <div class="link"></div>
+    <div class="node chapnode" data-chap="cross"><div class="dot">×</div><div class="nm">Produit vectoriel<small>disponible</small></div></div>
+    <div class="link"></div>
+    <div class="node chapnode" data-chap="line"><div class="dot">╱</div><div class="nm">Droites dans l'espace<small>disponible</small></div></div>
+    <div class="link"></div>
+    <div class="node locked"><div class="dot">λ</div><div class="nm">Valeurs propres<small>🔒</small></div></div>
+  </nav>
+
+  <div class="progbanner" id="progbanner"></div>
+
+  <!-- ===================== CHAPITRE : SYSTÈMES LINÉAIRES ===================== -->
+  <section class="quest" id="chap-gj">
+    <div class="qhead">
+      <div><div class="eyebrow">Chapitre · Méthode de Gauss-Jordan</div><h2>Résous le système linéaire</h2></div>
+      <div class="qmeta">
+        <div class="modeToggle" id="modeToggle">
+          <button class="mt" data-n="2" aria-selected="true">Débutant · 2×2</button>
+          <button class="mt" data-n="3" aria-selected="false">Normal · 3×3</button>
+        </div>
+        <span class="badge-pill">Opérations : <b id="opCount">0</b></span>
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <div class="subhead">Le système à résoudre</div>
+        <div class="system">
+          <div id="eqns"></div>
+          <div class="solnote" id="solnote">Amène la matrice à la forme <b style="color:var(--ink)">[ identité | solution ]</b> pour trouver les inconnues.</div>
+        </div>
+        <div class="objective"><span>Pivots obtenus</span><span class="pips" id="pips"></span></div>
+      </div>
+      <div>
+        <div class="subhead">Matrice augmentée <span style="color:var(--cyan)">[ A | b ]</span></div>
+        <div class="goalline">Ton but : rendre le bloc de gauche = <b>1 sur la diagonale, 0 ailleurs</b>. La colonne de droite donnera alors la solution.</div>
+        <div class="matrixwrap"><div class="mstage">
+          <div class="rowlabels" id="rowlabels"></div>
+          <div class="bracket l"></div><div class="matrix" id="matrix"></div><div class="bracket r"></div>
+        </div></div>
+      </div>
+    </div>
+    <div class="console">
+      <div class="coach" id="coach"></div>
+      <div class="tabs" role="tablist">
+        <div class="tab" role="tab" data-mode="swap" aria-selected="true">↔ Échanger</div>
+        <div class="tab" role="tab" data-mode="scale" aria-selected="false">× Multiplier</div>
+        <div class="tab" role="tab" data-mode="combine" aria-selected="false">＋ Combiner</div>
+      </div>
+      <div class="opexpl" id="opexpl"></div>
+      <div class="opline show" data-op="swap"><span>Échanger</span><select id="sw1"></select><span>↔</span><select id="sw2"></select></div>
+      <div class="opline" data-op="scale"><span class="lhs">L<select id="scL"></select></span><span>←</span><input class="k" id="scK" value="1/2" inputmode="text" aria-label="scalaire"><span>·</span><span class="lhs">L<span id="scLmir">1</span></span></div>
+      <div class="opline" data-op="combine"><span class="lhs">L<select id="cbI"></select></span><span>←</span><input class="k" id="cbA" value="1" inputmode="text" aria-label="coefficient de la ligne modifiee"><span>·</span><span class="lhs">L<span id="cbImir">2</span></span><span>+</span><input class="k" id="cbK" value="-2" inputmode="text" aria-label="scalaire"><span>·</span><span class="lhs">L<select id="cbJ"></select></span></div>
+      <div class="actions">
+        <button class="primary" id="apply">Appliquer</button>
+        <button class="ghost" id="undo">↶ Annuler</button>
+        <button class="hint" id="hint">💡 Coup de pouce</button>
+        <button class="help" id="helpBtn">❔ Comment jouer</button>
+        <button class="ghost" id="reveal">Voir la solution</button>
+        <button class="ghost" id="newq" style="margin-left:auto">↻ Nouvelle quête</button>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="win" id="win">
+        <h3 id="winTitle">Quête réussie ! 🎉</h3>
+        <div id="winSub" style="color:var(--muted);font-size:.9rem;"></div>
+        <div class="row"><span class="tag">Solution : <span class="solvec" id="winSol"></span></span><span class="tag gold" id="winXp">+120 XP</span><span class="tag badge" id="winBadge" style="display:none">🏅 Compétence maîtrisée — badge débloqué !</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CHAPITRE : GÉOMÉTRIE VECTORIELLE ===================== -->
+  <section class="quest" id="chap-vec" style="display:none">
+    <div class="qhead">
+      <div><div class="eyebrow">Chapitre · Géométrie vectorielle</div><h2>Produit scalaire &amp; angle</h2></div>
+      <div class="qmeta"><span class="badge-pill">Étapes : <b id="stepCount">0</b>/2</span></div>
+    </div>
+    <div class="grid">
+      <div>
+        <div class="subhead">Les deux vecteurs</div>
+        <div class="given">
+          <div class="vecrow u"><span class="lab">u</span><span>=</span><span class="col" id="uCol"></span></div>
+          <div class="vecrow v"><span class="lab">v</span><span>=</span><span class="col" id="vCol"></span></div>
+          <div class="formula">Rappel : <b>u · v = u₁·v₁ + u₂·v₂</b> — et le <b>signe</b> du produit scalaire donne l'angle.</div>
+        </div>
+      </div>
+      <div>
+        <div class="subhead">Représentation</div>
+        <div class="plotwrap"><canvas id="plot"></canvas></div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step" id="step1">
+        <div class="lbl"><span>Étape 1</span><span class="chk" id="chk1"></span></div>
+        <h3>Calcule le produit scalaire <span style="font-family:var(--mono)">u · v</span></h3>
+        <div class="answerline"><input class="num" id="dotInput" inputmode="numeric" placeholder="?" aria-label="produit scalaire"><button class="primary" id="dotValidate">Valider</button></div>
+      </div>
+      <div class="step locked" id="step2">
+        <div class="lbl"><span>Étape 2</span><span class="chk" id="chk2"></span></div>
+        <h3>D'après ce résultat, l'angle entre u et v est…</h3>
+        <div class="choices"><button class="choice" data-ang="aigu">Aigu (&lt; 90°)</button><button class="choice" data-ang="droit">Droit (= 90°)</button><button class="choice" data-ang="obtus">Obtus (&gt; 90°)</button></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="hint" id="v_hint">💡 Coup de pouce</button>
+      <button class="help" id="v_help">❔ Comment jouer</button>
+      <button class="ghost" id="v_newq" style="margin-left:auto">↻ Nouvelle quête</button>
+    </div>
+    <div class="status" id="v_status"></div>
+    <div class="win" id="v_win">
+      <h3 id="v_winTitle">Quête réussie ! 🎉</h3>
+      <div id="v_winSub" style="color:var(--muted);font-size:.9rem;"></div>
+      <div class="row"><span class="tag gold" id="v_winXp">+100 XP</span><span class="tag badge" id="v_winBadge" style="display:none">🏅 Compétence maîtrisée — badge débloqué !</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== CHAPITRE : ALGÈBRE MATRICIELLE ===================== -->
+  <section class="quest" id="chap-mat" style="display:none">
+    <div class="qhead"><div><div class="eyebrow">Chapitre · Algèbre matricielle</div><h2>Produit de matrices A · B</h2></div>
+      <div class="qmeta"><span class="badge-pill">Entrées : <b id="mat_prog">0</b>/4</span></div></div>
+    <div class="grid">
+      <div><div class="subhead">Les matrices (2 × 2)</div>
+        <div class="system">
+          <div class="matline"><span class="lab">A</span><span id="mat_A"></span></div>
+          <div class="matline"><span class="lab">B</span><span id="mat_B"></span></div>
+          <div class="formula">Rappel : <b>cᵢⱼ = (ligne i de A) · (colonne j de B)</b> = aᵢ₁·b₁ⱼ + aᵢ₂·b₂ⱼ</div>
+        </div>
+      </div>
+      <div><div class="subhead">Calcule C = A · B</div>
+        <div class="matline"><span class="lab" style="color:var(--cyan)">C</span><div class="fillgrid" id="mat_grid"></div></div>
+      </div>
+    </div>
+    <div class="actions"><button class="primary" id="mat_check">Vérifier</button><button class="hint" id="mat_hint">💡 Coup de pouce</button><button class="help" id="mat_help">❔ Comment jouer</button><button class="ghost" id="mat_newq" style="margin-left:auto">↻ Nouvelle quête</button></div>
+    <div class="status" id="mat_status"></div>
+    <div class="win" id="mat_win"><h3 id="mat_winTitle">Quête réussie ! 🎉</h3><div id="mat_winSub" style="color:var(--muted);font-size:.9rem;"></div><div class="row"><span class="tag gold" id="mat_winXp">+100 XP</span><span class="tag badge" id="mat_winBadge" style="display:none">🏅 Compétence maîtrisée — badge débloqué !</span></div></div>
+  </section>
+
+  <!-- ===================== CHAPITRE : DÉTERMINANTS ===================== -->
+  <section class="quest" id="chap-det" style="display:none">
+    <div class="qhead"><div><div class="eyebrow">Chapitre · Déterminants</div><h2>Calcule le déterminant</h2></div>
+      <div class="qmeta"><div class="modeToggle" id="det_toggle"><button class="mt" data-n="2" aria-selected="true">2×2</button><button class="mt" data-n="3" aria-selected="false">3×3</button></div><span class="badge-pill">Étapes : <b id="det_prog">0</b>/2</span></div></div>
+    <div class="grid">
+      <div><div class="subhead">La matrice</div><div class="system"><div class="matline"><span class="lab">A</span><span id="det_M"></span></div><div class="formula" id="det_formula"></div></div></div>
+      <div><div class="steps">
+        <div class="step" id="det_step1"><div class="lbl"><span>Étape 1</span><span class="chk" id="det_chk1"></span></div><h3>Valeur du déterminant</h3><div class="answerline"><input class="num" id="det_input" inputmode="numeric" placeholder="?" aria-label="déterminant"><button class="primary" id="det_validate">Valider</button></div></div>
+        <div class="step locked" id="det_step2"><div class="lbl"><span>Étape 2</span><span class="chk" id="det_chk2"></span></div><h3>La matrice est-elle inversible ?</h3><div class="choices"><button class="choice" data-inv="oui">Oui</button><button class="choice" data-inv="non">Non</button></div></div>
+      </div></div>
+    </div>
+    <div class="actions"><button class="hint" id="det_hint">💡 Coup de pouce</button><button class="help" id="det_help">❔ Comment jouer</button><button class="ghost" id="det_newq" style="margin-left:auto">↻ Nouvelle quête</button></div>
+    <div class="status" id="det_status"></div>
+    <div class="win" id="det_win"><h3 id="det_winTitle">Quête réussie ! 🎉</h3><div id="det_winSub" style="color:var(--muted);font-size:.9rem;"></div><div class="row"><span class="tag gold" id="det_winXp">+100 XP</span><span class="tag badge" id="det_winBadge" style="display:none">🏅 Compétence maîtrisée — badge débloqué !</span></div></div>
+  </section>
+
+  <!-- ===================== CHAPITRE : PRODUIT VECTORIEL ===================== -->
+  <section class="quest" id="chap-cross" style="display:none">
+    <div class="qhead"><div><div class="eyebrow">Chapitre · Géométrie vectorielle</div><h2>Produit vectoriel u × v (dans R³)</h2></div>
+      <div class="qmeta"><span class="badge-pill">Composantes : <b id="cross_prog">0</b>/3</span></div></div>
+    <div class="grid">
+      <div><div class="subhead">Les vecteurs</div><div class="system">
+        <div class="matline"><span class="lab">u</span><span class="vcol" id="cross_u"></span><span class="lab" style="color:var(--cyan)">v</span><span class="vcol" id="cross_v"></span></div>
+        <div class="formula">Rappel : <b>u × v = (u₂v₃ − u₃v₂ , u₃v₁ − u₁v₃ , u₁v₂ − u₂v₁)</b></div></div></div>
+      <div><div class="subhead">Calcule w = u × v</div><div class="vecfill" id="cross_inputs"></div></div>
+    </div>
+    <div class="actions"><button class="primary" id="cross_check">Vérifier</button><button class="hint" id="cross_hint">💡 Coup de pouce</button><button class="help" id="cross_help">❔ Comment jouer</button><button class="ghost" id="cross_newq" style="margin-left:auto">↻ Nouvelle quête</button></div>
+    <div class="status" id="cross_status"></div>
+    <div class="win" id="cross_win"><h3 id="cross_winTitle">Quête réussie ! 🎉</h3><div id="cross_winSub" style="color:var(--muted);font-size:.9rem;"></div><div class="row"><span class="tag gold" id="cross_winXp">+100 XP</span><span class="tag badge" id="cross_winBadge" style="display:none">🏅 Compétence maîtrisée — badge débloqué !</span></div></div>
+  </section>
+
+  <!-- ===================== CHAPITRE : DROITES DANS L'ESPACE ===================== -->
+  <section class="quest" id="chap-line" style="display:none">
+    <div class="qhead"><div><div class="eyebrow">Chapitre · Droites dans l'espace</div><h2>Équation paramétrique d'une droite</h2></div>
+      <div class="qmeta"><span class="badge-pill">Étapes : <b id="line_prog">0</b>/2</span></div></div>
+    <div class="grid">
+      <div><div class="subhead">La droite</div><div class="system"><div class="eqbox" id="line_eqn"></div><div class="formula">Un point A et une direction d : chaque valeur de t donne un point (x, y, z) = A + t·d.</div></div></div>
+      <div><div class="steps">
+        <div class="step" id="line_step1"><div class="lbl"><span>Étape 1</span><span class="chk" id="line_chk1"></span></div><h3>Trouve le point pour t = <span id="line_tval">2</span></h3><div class="vecfill" id="line_inputs"></div><div style="margin-top:10px"><button class="primary" id="line_validate">Valider</button></div></div>
+        <div class="step locked" id="line_step2"><div class="lbl"><span>Étape 2</span><span class="chk" id="line_chk2"></span></div><h3>Le point <span id="line_M" style="font-family:var(--mono)"></span> est-il sur la droite ?</h3><div class="choices"><button class="choice" data-on="oui">Oui</button><button class="choice" data-on="non">Non</button></div></div>
+      </div></div>
+    </div>
+    <div class="actions"><button class="hint" id="line_hint">💡 Coup de pouce</button><button class="help" id="line_help">❔ Comment jouer</button><button class="ghost" id="line_newq" style="margin-left:auto">↻ Nouvelle quête</button></div>
+    <div class="status" id="line_status"></div>
+    <div class="win" id="line_win"><h3 id="line_winTitle">Quête réussie ! 🎉</h3><div id="line_winSub" style="color:var(--muted);font-size:.9rem;"></div><div class="row"><span class="tag gold" id="line_winXp">+100 XP</span><span class="tag badge" id="line_winBadge" style="display:none">🏅 Compétence maîtrisée — badge débloqué !</span></div></div>
+  </section>
+
+  <div class="bottom">
+    <div class="board"><h4>Palmarès de la classe</h4><div id="board"></div></div>
+    <div class="pitch">
+      <h4>Une app, plusieurs chapitres</h4>
+      <ul>
+        <li><b>Change de chapitre</b> dans la carte du haut : Systèmes linéaires ↔ Géométrie vectorielle.</li>
+        <li><b>Progression partagée</b> — ton XP et ton niveau montent d'un chapitre à l'autre.</li>
+        <li><b>Deux pédagogies</b> — manipulation de matrice guidée, et géométrie visuelle des vecteurs.</li>
+        <li>Preuve que l'app couvre <b>tout le cours 201-NYC-05</b>, chapitre par chapitre.</li>
+      </ul>
+    </div>
+  </div>
+  <footer>AlgèbreQuest · démo conceptuelle — <b>Productions iMédias</b> · à valider avec l'enseignant·e</footer>
+</div>
+
+<div class="overlay" id="welcome">
+  <div class="modal">
+    <div class="wbrand">
+      <div class="sigil" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20L12 4l8 16"/><path d="M7.5 14h9"/></svg></div>
+      <div><h1>AlgèbreQuest</h1><span class="chip">CÉGEP · 201-NYC-05</span></div>
+    </div>
+    <h3 style="text-align:center">Bienvenue, futur·e as de l'algèbre !</h3>
+    <p style="text-align:center">Choisis ton avatar et ton nom de code, puis pars à la conquête des chapitres du cours.</p>
+    <div class="wlabel">Ton avatar</div>
+    <div class="avpick" id="avpick">
+      <div class="avopt" data-emoji="🦉" aria-selected="true">🦉</div>
+      <div class="avopt" data-emoji="🦊">🦊</div>
+      <div class="avopt" data-emoji="🤖">🤖</div>
+      <div class="avopt" data-emoji="🐱">🐱</div>
+      <div class="avopt" data-emoji="🚀">🚀</div>
+      <div class="avopt" data-emoji="🦁">🦁</div>
+      <div class="avopt" data-emoji="🐢">🐢</div>
+      <div class="avopt" data-emoji="🦄">🦄</div>
+    </div>
+    <div class="wlabel">Ton nom de code <span style="text-transform:none;letter-spacing:0">(optionnel)</span></div>
+    <input class="pseudo" id="pseudo" maxlength="22" placeholder="ex. Vecteur Vaillant" aria-label="nom de code">
+    <button class="primary" id="beginBtn" style="width:100%;margin-top:18px">Commencer l'aventure →</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="howto">
+  <div class="modal">
+    <div id="howtoGJ">
+      <div class="eyebrow">Comment jouer — Systèmes linéaires</div>
+      <h3>Trouver la valeur des inconnues x et y</h3>
+      <p>On te donne un <b>système d'équations</b> (ex. « 2x − 3y = 5 »). Chaque <b>ligne du tableau</b> à droite <b>EST une équation</b> : les nombres à gauche de la barre sont les coefficients de x et y, celui de droite est le résultat.</p>
+      <p><b>Le but :</b> transformer le côté gauche en <b>matrice identité</b> — des <b>1</b> sur la diagonale, des <b>0</b> ailleurs :</p>
+      <div class="tgt"><span class="m"><b>1</b> 0 | x</span><span class="m">0 <b>1</b> | y</span></div>
+      <p>Là, la colonne de droite te donne <b>directement</b> la valeur de <b>x</b> et de <b>y</b>. 🎯</p>
+      <p>Pour y arriver, tu as 3 opérations permises sur les lignes :</p>
+      <ul>
+        <li><b>↔ Échanger</b> — inverser deux lignes.</li>
+        <li><b>× Multiplier</b> — multiplier une ligne par un nombre. <em>Ex. : 2 → 1 en multipliant par 1/2.</em></li>
+        <li><b>＋ Combiner</b> — ajouter à une ligne un multiple d'une autre (pour créer des 0).</li>
+      </ul>
+      <p class="tip">🧠 <b>C'est toi qui joues !</b> Personne ne dicte les coups — tu choisis tes opérations pour atteindre l'objectif. Vraiment bloqué ? le bouton <b>💡 Coup de pouce</b> te souffle l'étape suivante (au prix d'une ⭐ étoile).</p>
+    </div>
+    <div id="howtoVec" style="display:none">
+      <div class="eyebrow">Comment jouer — Géométrie vectorielle</div>
+      <h3>Produit scalaire &amp; angle entre deux vecteurs</h3>
+      <p>On te donne deux vecteurs <b style="color:var(--violet)">u</b> et <b style="color:var(--cyan)">v</b>, dessinés depuis l'origine.</p>
+      <div class="fx">u · v = u₁·v₁ + u₂·v₂</div>
+      <p><b>Étape 1 :</b> calcule ce nombre. <b>Étape 2 :</b> son <b>signe</b> révèle l'angle :</p>
+      <ul>
+        <li><b>Positif</b> → angle <b>aigu</b> (&lt; 90°).</li>
+        <li><b>Zéro</b> → angle <b>droit</b> (perpendiculaires).</li>
+        <li><b>Négatif</b> → angle <b>obtus</b> (&gt; 90°).</li>
+      </ul>
+      <p style="font-size:.84rem">💡 Vérifie ton intuition sur le dessin.</p>
+    </div>
+    <div id="howtoMat" style="display:none">
+      <div class="eyebrow">Comment jouer — Produit matriciel</div>
+      <h3>Multiplie deux matrices A · B</h3>
+      <p>Chaque entrée du résultat se calcule <b>ligne par colonne</b> :</p>
+      <div class="fx">cᵢⱼ = aᵢ₁·b₁ⱼ + aᵢ₂·b₂ⱼ</div>
+      <p>Remplis les 4 cases de C, puis clique <b>Vérifier</b>. Les bonnes deviennent vertes, les autres rouges.</p>
+      <p style="font-size:.84rem">💡 <b>Coup de pouce</b> détaille le calcul d'une entrée.</p>
+    </div>
+    <div id="howtoDet" style="display:none">
+      <div class="eyebrow">Comment jouer — Déterminants</div>
+      <h3>Calcule le déterminant, puis conclus</h3>
+      <div class="fx">2×2 : det = a·d − b·c</div>
+      <p><b>Étape 1 :</b> entre la valeur du déterminant (3×3 : développe selon la 1re ligne).</p>
+      <p><b>Étape 2 :</b> une matrice est <b>inversible</b> exactement quand son <b>déterminant ≠ 0</b>.</p>
+    </div>
+    <div id="howtoCross" style="display:none">
+      <div class="eyebrow">Comment jouer — Produit vectoriel</div>
+      <h3>Calcule u × v dans l'espace</h3>
+      <div class="fx">u × v = (u₂v₃ − u₃v₂ , u₃v₁ − u₁v₃ , u₁v₂ − u₂v₁)</div>
+      <p>Remplis les 3 composantes, puis <b>Vérifier</b>. Le résultat est un vecteur <b>perpendiculaire</b> à u et à v.</p>
+    </div>
+    <div id="howtoLine" style="display:none">
+      <div class="eyebrow">Comment jouer — Droites dans l'espace</div>
+      <h3>Une droite = un point + une direction</h3>
+      <div class="fx">(x, y, z) = A + t · d</div>
+      <p><b>Étape 1 :</b> remplace t par la valeur demandée et calcule le point (x, y, z).</p>
+      <p><b>Étape 2 :</b> un point M est <b>sur la droite</b> s'il existe <b>un seul</b> t qui donne ses trois coordonnées.</p>
+    </div>
+    <button class="primary" id="startBtn">Commencer</button>
+  </div>
+</div>
+
+<div class="levelup" id="levelup">
+  <div class="lu-card">
+    <div class="big" id="lu_icon">⭐</div>
+    <h3 id="lu_title">Niveau terminé !</h3>
+    <div class="lu-stars" id="lu_stars"></div>
+    <p id="lu_text"></p>
+    <button class="primary" id="lu_ok">Continuer →</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="tutorial">
+  <div class="modal">
+    <div id="tut_body" style="text-align:center"></div>
+    <div class="tut-nav">
+      <button class="ghost" id="tut_prev">← Précédent</button>
+      <div class="tut-dots" id="tut_dots"></div>
+      <button class="primary" id="tut_next" style="width:auto;margin:0">Suivant →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ================= PARTAGÉ : joueur, HUD, palmarès ================= */
+let player={xp:60,level:1,streak:0,done:0,badge:false,name:'Toi'};
+function renderHUD(){
+  const per=250,into=player.xp%per,pct=Math.round(into/per*100);
+  document.getElementById('lvlTxt').textContent=player.level;
+  document.getElementById('xpTxt').textContent=into;
+  document.getElementById('doneTxt').textContent=player.done;
+  document.getElementById('streak').textContent='🔥 Série : '+player.streak;
+  document.getElementById('xpbar').style.setProperty('--xp',pct+'%');
+  document.getElementById('avatar').style.setProperty('--xp',pct+'%');
+  document.getElementById('avLvl').textContent='N'+player.level;
+}
+function renderBoard(){
+  const base=[['Lévi',920],['Anaïs',760],['Sofia',540],['Malik',430],['Théo',300],['Jade',210],['Noah',150]];
+  let list=base.map(p=>({nm:p[0],xp:p[1],me:false})); list.push({nm:player.name||'Toi',xp:player.xp,me:true});
+  list.sort((a,b)=>b.xp-a.xp);
+  const host=document.getElementById('board'); host.innerHTML='';
+  list.slice(0,6).forEach((p,i)=>{ const d=document.createElement('div'); d.className='lb'+(p.me?' me':''); d.innerHTML='<span class="rk">'+(i+1)+'</span><span class="nm">'+p.nm+'</span><span class="xp">'+p.xp+' XP</span>'; host.appendChild(d); });
+}
+// Attribue l'XP et met à jour niveau/badge. Renvoie {gained,leveled,badgeNow}.
+function award(gained){
+  player.xp+=gained; player.done++; player.streak++;
+  const nl=1+Math.floor(player.xp/250), leveled=nl>player.level; player.level=nl;
+  const badgeNow=(player.level>=3&&!player.badge); if(badgeNow)player.badge=true;
+  renderHUD(); renderBoard();
+  return {gained,leveled,badgeNow};
+}
+
+/* ===== Progression : parcours guidé (niveaux, étoiles, déblocage, sauvegarde locale) ===== */
+const Prog=(function(){
+  const ORDER=['gj','vec','mat','det','cross','line'];
+  const NAMES={gj:'Systèmes linéaires',vec:'Géométrie vectorielle',mat:'Algèbre matricielle',det:'Déterminants',cross:'Produit vectoriel',line:'Droites dans l\'espace'};
+  const PER=3, MAXL=5, KEY='algebrequest_progress_v1';
+  const NEWQ={gj:'newq',vec:'v_newq',mat:'mat_newq',det:'det_newq',cross:'cross_newq',line:'line_newq'};
+  let cur='gj', data;
+  function fresh(){const c={};ORDER.forEach((k,i)=>c[k]={level:1,cleared:0,stars:[0,0,0,0,0],hints:0,unlocked:i===0,done:false});return{chap:c,xp:60,name:'Toi'};}
+  function load(){ try{const s=localStorage.getItem(KEY); data=s?JSON.parse(s):fresh(); }catch(e){ data=fresh(); } if(!data||!data.chap)data=fresh();
+    if(typeof data.xp==='number')player.xp=data.xp; if(data.name)player.name=data.name;
+    player.level=1+Math.floor(player.xp/250); if(player.level>=3)player.badge=true; }
+  function save(){ try{ data.xp=player.xp; data.name=player.name; localStorage.setItem(KEY,JSON.stringify(data)); }catch(e){} }
+  function reset(){ try{localStorage.removeItem(KEY);}catch(e){} location.reload(); }
+  function level(k){ return data&&data.chap[k]?data.chap[k].level:1; }
+  function unlocked(k){ return data&&data.chap[k]?data.chap[k].unlocked:(k==='gj'); }
+  function setCurrent(k){ cur=k; }
+  function noteHint(){ if(data&&data.chap[cur])data.chap[cur].hints++; }
+  function starsTotal(k){ return data.chap[k].stars.reduce((a,b)=>a+b,0); }
+  function rank(){ const x=player.xp; return x>=1500?'Maître de l\'algèbre':x>=900?'Expert':x>=500?'Tacticien':x>=250?'Initié':'Apprenti'; }
+  function stars3(n){ return '⭐'.repeat(n)+'☆'.repeat(3-n); }
+  function onWin(k){
+    const c=data.chap[k];
+    if(!c.done){
+      c.cleared++;
+      if(c.cleared>=PER){
+        const st=c.hints===0?3:(c.hints<=2?2:1);
+        c.stars[c.level-1]=Math.max(c.stars[c.level-1],st); c.hints=0; c.cleared=0;
+        const idx=ORDER.indexOf(k);
+        if(c.level>=MAXL){ c.done=true; celebrate(k,c.level,st,true,null); }
+        else { c.level++; let unl=null; if(c.level===3 && idx+1<ORDER.length && !data.chap[ORDER[idx+1]].unlocked){ data.chap[ORDER[idx+1]].unlocked=true; unl=ORDER[idx+1]; } celebrate(k,c.level-1,st,false,unl); }
+      }
+    }
+    save(); renderMap(); renderBanner();
+  }
+  function celebrate(k,lvl,st,chapDone,unl){
+    document.getElementById('lu_icon').textContent=chapDone?'🏆':'⭐';
+    document.getElementById('lu_title').textContent=chapDone?'Chapitre maîtrisé !':('Niveau '+lvl+' terminé !');
+    document.getElementById('lu_stars').textContent=stars3(st);
+    let txt=chapDone?('Tu as complété tous les niveaux de « '+NAMES[k]+' ».'):('La difficulté augmente — en route vers le niveau '+lvl+' !');
+    if(chapDone&&unl) txt+=' 🔓 Nouveau chapitre débloqué : « '+NAMES[unl]+' » !';
+    document.getElementById('lu_text').textContent=txt;
+    document.getElementById('levelup').classList.add('show');
+  }
+  function renderMap(){
+    document.querySelectorAll('.chapnode').forEach(n=>{ const k=n.dataset.chap, c=data.chap[k]; if(!c)return;
+      n.classList.toggle('locked', !c.unlocked);
+      const small=n.querySelector('small');
+      if(!c.unlocked) small.textContent='🔒 verrouillé';
+      else if(c.done) small.innerHTML='✓ maîtrisé';
+      else small.textContent='Niveau '+c.level+'/'+MAXL; });
+  }
+  function renderBanner(){
+    const c=data.chap[cur], b=document.getElementById('progbanner'); if(!c){b.innerHTML='';return;}
+    const sNow=stars3(c.stars[c.level-1]||0);
+    b.innerHTML='<span class="pb-title">'+NAMES[cur]+'</span>'
+      +(c.done?'<span class="pb-sub">✓ Chapitre maîtrisé — bravo !</span>'
+              :'<span class="pb-sub">réussis '+c.cleared+'/'+PER+' pour monter de niveau</span>'
+               +'<span class="pb-bar"><i style="width:'+Math.round(c.cleared/PER*100)+'%"></i></span>'
+               +'<span class="pb-stars">'+sNow+'</span>')
+      +'<span class="pb-rank">🏅 '+rank()+'</span>'+'<span class="pb-lvl">🎚️ <b>Niveau</b> <select id="pb_lvlsel" title="Change le niveau de difficulté">'+[1,2,3,4,5].map(function(L){return '<option value="'+L+'"'+(L===c.level?' selected':'')+'>'+L+'</option>';}).join('')+'</select> / '+MAXL+'</span>'
+      +'<button id="pb_tut" title="Revoir le tutoriel" style="background:transparent;border:1px solid var(--line2);color:var(--violet);font-size:.74rem;font-weight:600;cursor:pointer;padding:5px 9px;border-radius:20px">📘 Tutoriel</button>'
+      +'<button id="pb_reset" title="Réinitialiser la progression" style="background:transparent;border:0;color:var(--faint);font-size:.8rem;cursor:pointer;padding:4px 6px">↺</button>';
+    const rb=document.getElementById('pb_reset'); if(rb)rb.addEventListener('click',reset);
+    const tb=document.getElementById('pb_tut'); if(tb)tb.addEventListener('click',()=>Tut.open());
+    const ls=document.getElementById('pb_lvlsel'); if(ls)ls.addEventListener('change',function(e){var nl=Math.max(1,Math.min(MAXL,+e.target.value));data.chap[cur].level=nl;data.chap[cur].cleared=0;save();var nq=document.getElementById(NEWQ[cur]);if(nq)nq.click();renderMap();renderBanner();});
+  }
+  function tutSeen(){ return !!(data&&data.tutSeen); }
+  function markTutSeen(){ if(data){ data.tutSeen=true; save(); } }
+  return {load,save,reset,level,unlocked,setCurrent,noteHint,onWin,renderMap,renderBanner,rank,ORDER,tutSeen,markTutSeen};
+})();
+
+/* ================= CHAPITRE 1 : GAUSS-JORDAN ================= */
+const GJ=(function(){
+  function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){const t=a%b;a=b;b=t;}return a||1;}
+  function F(n,d){d=(d===undefined)?1:d;if(d===0)d=1;if(d<0){n=-n;d=-d;}const g=gcd(n,d);return{n:n/g,d:d/g};}
+  const isZero=f=>f.n===0,isOne=f=>f.n===1&&f.d===1;
+  const add=(a,b)=>F(a.n*b.d+b.n*a.d,a.d*b.d),mul=(a,b)=>F(a.n*b.n,a.d*b.d),inv=a=>F(a.d,a.n);
+  const fracText=f=>f.d===1?(''+f.n):(f.n+'/'+f.d);
+  function fracHTML(f){ if(f.d===1)return''+f.n; const neg=f.n<0,n=Math.abs(f.n); return (neg?'<span class="neg">−</span>':'')+'<span class="frac"><span class="fn">'+n+'</span><span class="fd">'+f.d+'</span></span>'; }
+  function parseFrac(str){ str=(str||'').trim().replace('−','-'); if(/^-?\d+$/.test(str))return F(parseInt(str,10),1); const m=str.match(/^(-?\d+)\s*\/\s*(-?\d+)$/); if(m)return F(parseInt(m[1],10),parseInt(m[2],10)); return null; }
+  const vnames=n=>n===2?['x','y']:['x','y','z'];
+  function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  function detN(A){const n=A.length;if(n===2)return A[0][0]*A[1][1]-A[0][1]*A[1][0];return A[0][0]*(A[1][1]*A[2][2]-A[1][2]*A[2][1])-A[0][1]*(A[1][0]*A[2][2]-A[1][2]*A[2][0])+A[0][2]*(A[1][0]*A[2][1]-A[1][1]*A[2][0]);}
+  function genSystem(n){let A,x,g=0;while(g++<800){A=Array.from({length:n},()=>Array.from({length:n},()=>ri(-3,3)));if(A[0][0]===0)continue;if(Math.abs(detN(A))===0)continue;x=Array.from({length:n},()=>ri(-4,4));if(x.every(v=>v===0))continue;break;}const b=A.map(row=>row.reduce((s,a,i)=>s+a*x[i],0));const M=A.map((row,r)=>[...row.map(v=>F(v)),F(b[r])]);const orig=M.map(r=>r.map(f=>F(f.n,f.d)));return{M,orig,sol:x};}
+
+  let state,N_MODE=2,beginner=true,mode='swap';
+  const OPEXPL={
+    swap:'<b>Échanger</b> : inverse deux lignes. Pratique pour amener une ligne utile (pivot non nul) à la bonne place.',
+    scale:'<b>Multiplier</b> : multiplie toute une ligne par un nombre (ex. <b>1/2</b>). Sert surtout à transformer un pivot en <b>1</b>.',
+    combine:'<b>Combiner</b> : L<sub>i</sub> ← <b>a</b>·L<sub>i</sub> + <b>b</b>·L<sub>j</sub>. Tu peux multiplier la ligne modifiée (<b>a</b>) en même temps que tu lui ajoutes un multiple d\'une autre — pratique pour créer des <b>0</b> en gardant des nombres entiers (ex. L2 ← 2·L2 − 3·L1).'
+  };
+  function setOpExpl(){ document.getElementById('opexpl').innerHTML=OPEXPL[mode]; }
+  const cloneM=M=>M.map(r=>r.map(f=>F(f.n,f.d)));
+  function pushUndo(){ state.undo.push(cloneM(state.M)); if(state.undo.length>60)state.undo.shift(); }
+  function fillSel(el,n){ el.innerHTML=''; for(let i=1;i<=n;i++){const o=document.createElement('option');o.value=i-1;o.textContent=i;el.appendChild(o);} }
+  function buildDynamic(n){
+    const rl=document.getElementById('rowlabels'); rl.innerHTML='';
+    for(let i=0;i<n;i++){const s=document.createElement('span');s.textContent='L'+(i+1);rl.appendChild(s);}
+    document.getElementById('matrix').style.gridTemplateColumns='repeat('+n+', 56px) 14px 62px';
+    const p=document.getElementById('pips');p.innerHTML='';for(let i=0;i<n;i++)p.appendChild(document.createElement('i'));
+    ['sw1','sw2','scL','cbI','cbJ'].forEach(id=>fillSel(document.getElementById(id),n));
+    const j2=Math.min(1,n-1);
+    document.getElementById('sw1').value='0';document.getElementById('sw2').value=''+j2;
+    document.getElementById('cbI').value=''+j2;document.getElementById('cbJ').value='0';document.getElementById('scL').value='0';document.getElementById('cbA').value='1';
+    document.getElementById('scLmir').textContent='1';document.getElementById('cbImir').textContent=''+(j2+1);
+  }
+  function gjMeta(){ document.getElementById('opCount').textContent=state?state.ops:0; }
+  function setStatus(html,cls){ const s=document.getElementById('status'); s.className='status'+(cls?' '+cls:''); s.innerHTML=html; }
+  function newQuest(){
+    const lv=Prog.level('gj'); N_MODE=lv<=2?2:3; beginner=(lv===1);
+    const n=N_MODE,g=genSystem(n);
+    state={n,M:g.M,orig:g.orig,sol:g.sol,ops:0,solved:false,undo:[],revealed:false};
+    buildDynamic(n); renderEqns(); renderMatrix(); renderHUD(); renderBoard(); gjMeta();
+    document.getElementById('win').classList.remove('show');
+    document.getElementById('undo').disabled=true;
+    document.getElementById('coach').style.display='none';
+    setStatus("À toi de jouer 💪 Amène la matrice à <b style='color:var(--ink)'>[ I | solution ]</b> avec tes 3 opérations. Vraiment coincé ? <b style='color:var(--gold)'>💡 Coup de pouce</b> (coûte une étoile).","");
+  }
+  function eqnHTML(row,n){ const vars=vnames(n);let parts=[];for(let i=0;i<n;i++){if(!isZero(row[i]))parts.push({c:row[i],v:vars[i]});}let s='';if(parts.length===0)s='0';else parts.forEach((p,idx)=>{const neg=p.c.n<0,abs=F(Math.abs(p.c.n),p.c.d),mag=isOne(abs)?'':fracText(abs);if(idx===0)s+=(neg?'−':'')+mag+p.v;else s+=(neg?' − ':' + ')+mag+p.v;});return s+' = '+fracText(row[n]); }
+  function pivotsDone(M,n){let c=0;for(let p=0;p<n;p++){if(!isOne(M[p][p]))continue;let ok=true;for(let r=0;r<n;r++){if(r!==p&&!isZero(M[r][p])){ok=false;break;}}if(ok)c++;}return c;}
+  function isSolved(M,n){for(let r=0;r<n;r++)for(let c=0;c<n;c++){const w=(r===c);if(w&&!isOne(M[r][c]))return false;if(!w&&!isZero(M[r][c]))return false;}return true;}
+  function renderMatrix(flash,nextSet){
+    const n=state.n,host=document.getElementById('matrix');host.innerHTML='';const done=pivotsDone(state.M,n);
+    for(let r=0;r<n;r++){for(let c=0;c<=n;c++){
+      if(c===n){const d=document.createElement('div');d.className='vdiv';host.appendChild(d);}
+      const cell=document.createElement('div');cell.className='cell'+(c===n?' aug':'');
+      if(c<n&&r===c&&isOne(state.M[r][c]))cell.className+=' pivot-ok';
+      if(nextSet&&nextSet.has(r+'-'+c))cell.className+=' next';
+      cell.innerHTML=fracHTML(state.M[r][c]);
+      if(flash&&flash.has(r+'-'+c))cell.classList.add('flash');
+      host.appendChild(cell);
+    }}
+    const pips=document.getElementById('pips').children;for(let i=0;i<pips.length;i++)pips[i].className=i<done?'on':'';
+  }
+  function renderEqns(){ document.getElementById('eqns').innerHTML=state.orig.map(r=>'<div class="eqn">'+eqnHTML(r,state.n)+'</div>').join(''); }
+  function afterOp(changed){ state.ops++; renderMatrix(changed); gjMeta(); document.getElementById('undo').disabled=false; if(isSolved(state.M,state.n)){win();} else if(beginner){coachStep();} }
+  function opSwap(i,j){ if(i===j){setStatus("Choisis deux lignes différentes.","bad");return;} pushUndo();const t=state.M[i];state.M[i]=state.M[j];state.M[j]=t;const ch=new Set();for(let c=0;c<=state.n;c++){ch.add(i+'-'+c);ch.add(j+'-'+c);}setStatus('Échange : L'+(i+1)+' ↔ L'+(j+1)+'.','');afterOp(ch); }
+  function opScale(i,k){ if(isZero(k)){setStatus("Le facteur ne peut pas être zéro.","bad");return;} pushUndo();state.M[i]=state.M[i].map(f=>mul(f,k));const ch=new Set();for(let c=0;c<=state.n;c++)ch.add(i+'-'+c);setStatus('L'+(i+1)+' ← ('+fracText(k)+')·L'+(i+1)+'.','');afterOp(ch); }
+  function opCombine(i,j,a,k){ if(i===j){setStatus("Combine deux lignes différentes.","bad");return;} if(isZero(a)){setStatus("Le coefficient devant la ligne modifiée ne peut pas être zéro.","bad");return;} if(isZero(k)){setStatus("Le facteur ne peut pas être zéro.","bad");return;} pushUndo();state.M[i]=state.M[i].map((f,c)=>add(mul(a,f),mul(k,state.M[j][c])));const ch=new Set();for(let c=0;c<=state.n;c++)ch.add(i+'-'+c);const aTxt=isOne(a)?'':'('+fracText(a)+')·';setStatus('L'+(i+1)+' ← '+aTxt+'L'+(i+1)+' + ('+fracText(k)+')·L'+(j+1)+'.','');afterOp(ch); }
+  function nextStep(M,n){ for(let p=0;p<n;p++){ if(isZero(M[p][p])){let r=-1;for(let k=p+1;k<n;k++){if(!isZero(M[k][p])){r=k;break;}}if(r>=0)return{type:'swap',i:p,j:r,cells:[p+'-'+p,r+'-'+p],desc:'Le pivot ('+(p+1)+','+(p+1)+') est nul : échange L'+(p+1)+' ↔ L'+(r+1)+'.'};} } for(let p=0;p<n;p++){ if(isZero(M[p][p]))continue; for(let r=0;r<n;r++){ if(r!==p&&!isZero(M[r][p])){ let a=M[p][p],k=mul(M[r][p],F(-1)); if(a.d===1&&k.d===1){const g=gcd(a.n,k.n)||1;a=F(a.n/g,1);k=F(k.n/g,1);} const aTxt=isOne(a)?'':'('+fracText(a)+')·'; return{type:'combine',i:r,j:p,a:a,k:k,cells:[r+'-'+p,p+'-'+p],desc:'Élimine l\'entrée ('+(r+1)+','+(p+1)+') sans fraction : L'+(r+1)+' ← '+aTxt+'L'+(r+1)+' + ('+fracText(k)+')·L'+(p+1)+'.'}; }} } for(let p=0;p<n;p++){ if(!isOne(M[p][p])){const k=inv(M[p][p]);return{type:'scale',i:p,k:k,cells:[p+'-'+p],desc:'Dernière étape : mets le pivot à 1 (la seule division) — L'+(p+1)+' ← ('+fracText(k)+')·L'+(p+1)+'.'};} } return null; }
+  function prefill(s){ document.querySelector('#chap-gj .tab[data-mode="'+s.type+'"]').click(); if(s.type==='swap'){document.getElementById('sw1').value=s.i;document.getElementById('sw2').value=s.j;} else if(s.type==='scale'){const scL=document.getElementById('scL');scL.value=s.i;scL.dispatchEvent(new Event('change'));document.getElementById('scK').value=fracText(s.k);} else {const cbI=document.getElementById('cbI');cbI.value=s.i;cbI.dispatchEvent(new Event('change'));document.getElementById('cbJ').value=s.j;document.getElementById('cbA').value=(s.a?fracText(s.a):'1');document.getElementById('cbK').value=fracText(s.k);} }
+  // Plus de coach qui dicte les coups : le joueur décide lui-même.
+  function coachStep(){ const c=document.getElementById('coach'); if(c)c.style.display='none'; }
+  function win(){
+    if(state.solved)return; state.solved=true; document.getElementById('coach').style.display='none';
+    const vars=vnames(state.n),sol=state.sol,gained=Math.max(70,130-state.ops*4);
+    const r=award(gained);
+    document.getElementById('winTitle').textContent=r.leveled?('Niveau '+player.level+' atteint ! 🎉'):'Quête réussie ! 🎉';
+    document.getElementById('winSub').innerHTML='Matrice réduite à [ I | solution ] en <b style="color:var(--ink)">'+state.ops+'</b> opérations.';
+    document.getElementById('winSol').textContent='('+vars.join(', ')+') = ('+sol.join(', ')+')';
+    document.getElementById('winXp').textContent='+'+r.gained+' XP';
+    document.getElementById('winBadge').style.display=r.badgeNow?'inline-block':'none';
+    document.getElementById('win').classList.add('show');
+    setStatus('Bravo ! Solution trouvée. Lance une <b style="color:var(--ink)">nouvelle quête</b> pour un système inédit.','ok');
+    renderMatrix();
+    Prog.onWin('gj');
+  }
+  function bindGJ(){
+    document.querySelectorAll('#chap-gj .tab').forEach(t=>t.addEventListener('click',()=>{
+      document.querySelectorAll('#chap-gj .tab').forEach(x=>x.setAttribute('aria-selected','false'));
+      t.setAttribute('aria-selected','true'); mode=t.dataset.mode;
+      document.querySelectorAll('#chap-gj .opline').forEach(o=>o.classList.toggle('show',o.dataset.op===mode));
+      setOpExpl();
+    }));
+    document.getElementById('scL').addEventListener('change',e=>document.getElementById('scLmir').textContent=(+e.target.value+1));
+    document.getElementById('cbI').addEventListener('change',e=>document.getElementById('cbImir').textContent=(+e.target.value+1));
+    document.querySelectorAll('#modeToggle .mt').forEach(b=>b.addEventListener('click',()=>{
+      document.querySelectorAll('#modeToggle .mt').forEach(x=>x.setAttribute('aria-selected','false'));
+      b.setAttribute('aria-selected','true'); N_MODE=+b.dataset.n; beginner=(N_MODE===2); newQuest();
+    }));
+    document.getElementById('apply').addEventListener('click',()=>{
+      if(state.solved){setStatus('Quête déjà résolue — lance une nouvelle quête.','hint');return;}
+      if(mode==='swap')opSwap(+document.getElementById('sw1').value,+document.getElementById('sw2').value);
+      else if(mode==='scale'){const k=parseFrac(document.getElementById('scK').value);if(!k){setStatus("Facteur invalide (ex. -3 ou 1/2).","bad");return;}opScale(+document.getElementById('scL').value,k);}
+      else {const a=parseFrac(document.getElementById('cbA').value);if(!a){setStatus("Coefficient de la ligne modifiée invalide (ex. 1, 2 ou 3/2).","bad");return;}const k=parseFrac(document.getElementById('cbK').value);if(!k){setStatus("Facteur invalide (ex. -2 ou 3/2).","bad");return;}opCombine(+document.getElementById('cbI').value,+document.getElementById('cbJ').value,a,k);}
+    });
+    document.getElementById('undo').addEventListener('click',()=>{
+      if(!state.undo.length)return; state.M=state.undo.pop(); state.ops=Math.max(0,state.ops-1); state.solved=false;
+      document.getElementById('win').classList.remove('show'); renderMatrix(); gjMeta();
+      document.getElementById('undo').disabled=!state.undo.length; if(beginner)coachStep(); else setStatus('Dernière opération annulée.','');
+    });
+    document.getElementById('hint').addEventListener('click',()=>{
+      if(state.solved){setStatus('Déjà résolu !','hint');return;} const s=nextStep(state.M,state.n); if(!s){setStatus('La matrice est déjà réduite.','hint');return;} Prog.noteHint();
+      prefill(s); renderMatrix(null,new Set(s.cells)); setStatus('💡 '+s.desc+' — les champs sont déjà remplis, clique <b style="color:var(--ink)">Appliquer</b>.','hint');
+    });
+    document.getElementById('reveal').addEventListener('click',()=>{
+      const vars=vnames(state.n); document.getElementById('solnote').innerHTML='Solution attendue : <span class="solvec">('+vars.join(', ')+') = ('+state.sol.join(', ')+')</span>. À toi de la retrouver !'; setStatus('Solution révélée (aucune XP).','hint');
+    });
+    document.getElementById('newq').addEventListener('click',newQuest);
+    setOpExpl();
+  }
+  return { start:function(){ bindGJ(); newQuest(); }, redraw:function(){} };
+})();
+
+/* ================= CHAPITRE 2 : GÉOMÉTRIE VECTORIELLE ================= */
+const VEC=(function(){
+  function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  function nz(){let x,y;do{x=ri(-5,5);y=ri(-5,5);}while(x===0&&y===0);return[x,y];}
+  let state,DPR=1;
+  function setStatus(t,c){ const s=document.getElementById('v_status'); s.className='status'+(c?' '+c:''); s.innerHTML=t; }
+  function newQuest(){
+    const u=nz(); let v; const roll=Math.random();
+    if(roll<0.25){ v=[-u[1],u[0]]; if(Math.random()<0.5)v=[u[1],-u[0]]; } else v=nz();
+    if(v[0]===0&&v[1]===0)v=[1,1];
+    const dot=u[0]*v[0]+u[1]*v[1], angle=dot>0?'aigu':(dot<0?'obtus':'droit');
+    state={u,v,dot,angle,step:1,solved:false};
+    document.getElementById('uCol').innerHTML=u[0]+'<br>'+u[1];
+    document.getElementById('vCol').innerHTML=v[0]+'<br>'+v[1];
+    document.getElementById('stepCount').textContent='0';
+    document.getElementById('chk1').textContent='';document.getElementById('chk2').textContent='';
+    const s1=document.getElementById('step1'),s2=document.getElementById('step2');
+    s1.classList.remove('done','locked');s2.classList.add('locked');s2.classList.remove('done');
+    document.getElementById('dotInput').value='';document.getElementById('dotInput').disabled=false;document.getElementById('dotValidate').disabled=false;
+    document.querySelectorAll('#chap-vec .choice').forEach(c=>{c.classList.remove('good','bad');c.disabled=false;});
+    document.getElementById('v_win').classList.remove('show');
+    setStatus("Étape 1 : additionne les produits des composantes. Bloqué ? Clique 💡 Coup de pouce.","");
+    drawPlot(false); renderHUD(); renderBoard();
+  }
+  function arrow(ctx,x0,y0,x1,y1,color,w){ ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();const ang=Math.atan2(y1-y0,x1-x0),hl=11*DPR;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x1-hl*Math.cos(ang-0.42),y1-hl*Math.sin(ang-0.42));ctx.lineTo(x1-hl*Math.cos(ang+0.42),y1-hl*Math.sin(ang+0.42));ctx.closePath();ctx.fill(); }
+  function needCCW(au,av){let d=av-au;while(d<=-Math.PI)d+=2*Math.PI;while(d>Math.PI)d-=2*Math.PI;return d<0;}
+  function drawPlot(showAngle){
+    const cv=document.getElementById('plot'),ctx=cv.getContext('2d');
+    DPR=Math.min(devicePixelRatio||1,2);
+    const size=Math.max(220,cv.clientWidth||320);
+    cv.width=size*DPR;cv.height=size*DPR;
+    const W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=6,unit=(W/2-14*DPR)/R;
+    const mx=x=>cx+x*unit,my=y=>cy-y*unit;
+    ctx.clearRect(0,0,W,H);
+    ctx.lineWidth=1;ctx.strokeStyle='rgba(0,0,0,.06)';
+    for(let i=-R;i<=R;i++){ctx.beginPath();ctx.moveTo(mx(i),my(-R));ctx.lineTo(mx(i),my(R));ctx.stroke();ctx.beginPath();ctx.moveTo(mx(-R),my(i));ctx.lineTo(mx(R),my(i));ctx.stroke();}
+    ctx.strokeStyle='rgba(110,95,89,.55)';ctx.lineWidth=1.4*DPR;
+    ctx.beginPath();ctx.moveTo(mx(-R),cy);ctx.lineTo(mx(R),cy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,my(-R));ctx.lineTo(cx,my(R));ctx.stroke();
+    const u=state.u,v=state.v;
+    if(showAngle){const au=Math.atan2(u[1],u[0]),av=Math.atan2(v[1],v[0]);ctx.strokeStyle='rgba(191,131,26,.95)';ctx.lineWidth=2*DPR;ctx.beginPath();ctx.arc(cx,cy,30*DPR,-au,-av,needCCW(au,av));ctx.stroke();}
+    arrow(ctx,cx,cy,mx(u[0]),my(u[1]),'#d42a1c',3*DPR);
+    arrow(ctx,cx,cy,mx(v[0]),my(v[1]),'#3f7a8a',3*DPR);
+    ctx.font='600 '+(15*DPR)+'px "IBM Plex Mono", monospace';
+    ctx.fillStyle='#a81e12';ctx.fillText('u',mx(u[0])+6*DPR,my(u[1])-6*DPR);
+    ctx.fillStyle='#2f5a66';ctx.fillText('v',mx(v[0])+6*DPR,my(v[1])-6*DPR);
+  }
+  function step1ok(){
+    document.getElementById('chk1').textContent='✓'; document.getElementById('step1').classList.add('done');
+    document.getElementById('dotInput').disabled=true; document.getElementById('dotValidate').disabled=true;
+    document.getElementById('step2').classList.remove('locked'); document.getElementById('stepCount').textContent='1'; state.step=2;
+    setStatus('Exact : u · v = '+state.dot+'. Maintenant, que dit son signe sur l\'angle ?','ok');
+  }
+  function win(){
+    if(state.solved)return; state.solved=true;
+    document.getElementById('chk2').textContent='✓'; document.getElementById('step2').classList.add('done'); document.getElementById('stepCount').textContent='2';
+    const r=award(100); drawPlot(true);
+    document.getElementById('v_winTitle').textContent=r.leveled?('Niveau '+player.level+' atteint ! 🎉'):'Quête réussie ! 🎉';
+    const noms={aigu:'aigu (< 90°)',droit:'droit (= 90°, orthogonaux)',obtus:'obtus (> 90°)'};
+    document.getElementById('v_winSub').innerHTML='u · v = <b style="color:var(--ink)">'+state.dot+'</b> → angle <b style="color:var(--ink)">'+noms[state.angle]+'</b>.';
+    document.getElementById('v_winXp').textContent='+'+r.gained+' XP';
+    document.getElementById('v_winBadge').style.display=r.badgeNow?'inline-block':'none';
+    document.getElementById('v_win').classList.add('show');
+    setStatus('Bravo ! Lance une nouvelle quête pour d\'autres vecteurs.','ok');
+    Prog.onWin('vec');
+  }
+  function bindVEC(){
+    document.getElementById('dotValidate').addEventListener('click',()=>{
+      if(state.step!==1)return; const raw=document.getElementById('dotInput').value.trim().replace('−','-');
+      if(!/^-?\d+$/.test(raw)){setStatus('Entre un nombre entier (ex. -7).','bad');return;}
+      if(parseInt(raw,10)===state.dot)step1ok(); else setStatus('Pas tout à fait. u·v = '+state.u[0]+'·'+state.v[0]+' + '+state.u[1]+'·'+state.v[1]+'.','bad');
+    });
+    document.getElementById('dotInput').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('dotValidate').click();});
+    document.querySelectorAll('#chap-vec .choice').forEach(c=>c.addEventListener('click',()=>{
+      if(state.step!==2||state.solved)return;
+      if(c.dataset.ang===state.angle){c.classList.add('good');document.querySelectorAll('#chap-vec .choice').forEach(x=>x.disabled=true);win();}
+      else{c.classList.add('bad');setStatus('Regarde le signe de u · v ('+state.dot+') et le dessin. Réessaie.','bad');}
+    }));
+    document.getElementById('v_hint').addEventListener('click',()=>{
+      if(state.solved){setStatus('Déjà résolu !','hint');return;}
+      Prog.noteHint();
+      if(state.step===1){ setStatus('💡 u · v = '+state.u[0]+'·('+state.v[0]+') + '+state.u[1]+'·('+state.v[1]+') = '+(state.u[0]*state.v[0])+' + '+(state.u[1]*state.v[1])+' = '+state.dot+'.','hint'); document.getElementById('dotInput').value=state.dot; }
+      else { const noms={aigu:'AIGU',droit:'DROIT (orthogonaux)',obtus:'OBTUS'}; setStatus('💡 u · v = '+state.dot+' est '+(state.dot>0?'positif':(state.dot<0?'négatif':'nul'))+' → angle '+noms[state.angle]+'.','hint'); }
+    });
+    document.getElementById('v_newq').addEventListener('click',newQuest);
+    addEventListener('resize',()=>{ if(state)drawPlot(state.solved); });
+  }
+  return { start:function(){ bindVEC(); newQuest(); }, redraw:function(){ if(state)drawPlot(state.solved); } };
+})();
+
+/* ================= CHAPITRE 3 : PRODUIT MATRICIEL ================= */
+const MAT=(function(){
+  function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  function miniHTML(M){let s='<span class="mtx" style="grid-template-columns:repeat('+M[0].length+',38px)">';for(let i=0;i<M.length;i++)for(let j=0;j<M[0].length;j++)s+='<span class="e">'+M[i][j]+'</span>';return s+'</span>';}
+  let state;
+  function setStatus(t,c){const s=document.getElementById('mat_status');s.className='status'+(c?' '+c:'');s.innerHTML=t;}
+  function newQuest(){
+    const A=[[ri(-4,4),ri(-4,4)],[ri(-4,4),ri(-4,4)]], B=[[ri(-4,4),ri(-4,4)],[ri(-4,4),ri(-4,4)]];
+    const C=[[0,0],[0,0]]; for(let i=0;i<2;i++)for(let j=0;j<2;j++)C[i][j]=A[i][0]*B[0][j]+A[i][1]*B[1][j];
+    state={A,B,C,solved:false};
+    document.getElementById('mat_A').innerHTML=miniHTML(A); document.getElementById('mat_B').innerHTML=miniHTML(B);
+    const g=document.getElementById('mat_grid'); g.style.gridTemplateColumns='repeat(2, 54px)'; g.innerHTML='';
+    for(let i=0;i<2;i++)for(let j=0;j<2;j++){const inp=document.createElement('input');inp.dataset.i=i;inp.dataset.j=j;inp.inputMode='numeric';inp.setAttribute('aria-label','c'+(i+1)+(j+1));g.appendChild(inp);}
+    document.getElementById('mat_prog').textContent='0'; document.getElementById('mat_win').classList.remove('show');
+    setStatus('Calcule chaque entrée : cᵢⱼ = ligne i de A · colonne j de B, puis clique Vérifier.','');
+    renderHUD(); renderBoard();
+  }
+  function check(){
+    if(state.solved)return; let allFilled=true,allGood=true;
+    document.querySelectorAll('#mat_grid input').forEach(inp=>{const i=+inp.dataset.i,j=+inp.dataset.j,raw=inp.value.trim().replace('−','-');inp.classList.remove('good','bad');if(!/^-?\d+$/.test(raw)){allFilled=false;allGood=false;return;}if(parseInt(raw,10)===state.C[i][j])inp.classList.add('good');else{inp.classList.add('bad');allGood=false;}});
+    document.getElementById('mat_prog').textContent=''+document.querySelectorAll('#mat_grid input.good').length;
+    if(!allFilled){setStatus('Remplis les 4 cases avec des entiers.','bad');return;}
+    if(allGood)win(); else setStatus('Certaines entrées sont à revoir (en rouge). Rappel : cᵢⱼ = aᵢ₁·b₁ⱼ + aᵢ₂·b₂ⱼ.','bad');
+  }
+  function hint(){Prog.noteHint();const A=state.A,B=state.B;setStatus('💡 c₁₁ = a₁₁·b₁₁ + a₁₂·b₂₁ = '+A[0][0]+'·'+B[0][0]+' + '+A[0][1]+'·'+B[1][0]+' = '+state.C[0][0]+'.','hint');const f=document.querySelector('#mat_grid input[data-i="0"][data-j="0"]');if(f)f.value=state.C[0][0];}
+  function win(){state.solved=true;document.getElementById('mat_prog').textContent='4';const r=award(100);document.getElementById('mat_winTitle').textContent=r.leveled?('Niveau '+player.level+' atteint ! 🎉'):'Quête réussie ! 🎉';document.getElementById('mat_winSub').innerHTML='C = A·B correctement calculée (4/4 entrées).';document.getElementById('mat_winXp').textContent='+'+r.gained+' XP';document.getElementById('mat_winBadge').style.display=r.badgeNow?'inline-block':'none';document.getElementById('mat_win').classList.add('show');setStatus('Bravo ! Produit matriciel exact.','ok');Prog.onWin('mat');}
+  function bindMAT(){document.getElementById('mat_check').addEventListener('click',check);document.getElementById('mat_hint').addEventListener('click',hint);document.getElementById('mat_newq').addEventListener('click',newQuest);}
+  return {start:function(){bindMAT();newQuest();},redraw:function(){}};
+})();
+
+/* ================= CHAPITRE 4 : DÉTERMINANTS ================= */
+const DET=(function(){
+  function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  function det2(A){return A[0][0]*A[1][1]-A[0][1]*A[1][0];}
+  function det3(A){return A[0][0]*(A[1][1]*A[2][2]-A[1][2]*A[2][1])-A[0][1]*(A[1][0]*A[2][2]-A[1][2]*A[2][0])+A[0][2]*(A[1][0]*A[2][1]-A[1][1]*A[2][0]);}
+  function miniHTML(M){let s='<span class="mtx" style="grid-template-columns:repeat('+M[0].length+',38px)">';for(let i=0;i<M.length;i++)for(let j=0;j<M[0].length;j++)s+='<span class="e">'+M[i][j]+'</span>';return s+'</span>';}
+  let state,N=2;
+  function setStatus(t,c){const s=document.getElementById('det_status');s.className='status'+(c?' '+c:'');s.innerHTML=t;}
+  function newQuest(){
+    N=Prog.level('det')>=3?3:2;
+    const n=N,A=Array.from({length:n},()=>Array.from({length:n},()=>ri(-4,4)));
+    const d=n===2?det2(A):det3(A); state={n,A,d,step:1,solved:false};
+    document.getElementById('det_M').innerHTML=miniHTML(A);
+    document.getElementById('det_formula').innerHTML=n===2?'Rappel : det = a·d − b·c (diagonale − antidiagonale).':'Rappel : développe selon la 1re ligne (cofacteurs).';
+    document.getElementById('det_prog').textContent='0';
+    const s1=document.getElementById('det_step1'),s2=document.getElementById('det_step2');
+    s1.classList.remove('done','locked');s2.classList.add('locked');s2.classList.remove('done');
+    document.getElementById('det_chk1').textContent='';document.getElementById('det_chk2').textContent='';
+    document.getElementById('det_input').value='';document.getElementById('det_input').disabled=false;document.getElementById('det_validate').disabled=false;
+    document.querySelectorAll('#chap-det .choice').forEach(c=>{c.classList.remove('good','bad');c.disabled=false;});
+    document.getElementById('det_win').classList.remove('show');
+    setStatus('Étape 1 : calcule le déterminant.','');
+    renderHUD();renderBoard();
+  }
+  function step1ok(){document.getElementById('det_chk1').textContent='✓';document.getElementById('det_step1').classList.add('done');document.getElementById('det_input').disabled=true;document.getElementById('det_validate').disabled=true;document.getElementById('det_step2').classList.remove('locked');document.getElementById('det_prog').textContent='1';state.step=2;setStatus('Exact : det = '+state.d+'. La matrice est-elle inversible ?','ok');}
+  function win(){state.solved=true;document.getElementById('det_chk2').textContent='✓';document.getElementById('det_step2').classList.add('done');document.getElementById('det_prog').textContent='2';const r=award(100);document.getElementById('det_winTitle').textContent=r.leveled?('Niveau '+player.level+' atteint ! 🎉'):'Quête réussie ! 🎉';document.getElementById('det_winSub').innerHTML='det = <b style="color:var(--ink)">'+state.d+'</b> → '+(state.d!==0?'inversible (solution unique).':'non inversible (det = 0).');document.getElementById('det_winXp').textContent='+'+r.gained+' XP';document.getElementById('det_winBadge').style.display=r.badgeNow?'inline-block':'none';document.getElementById('det_win').classList.add('show');setStatus('Bravo !','ok');Prog.onWin('det');}
+  function hint(){if(state.solved)return;Prog.noteHint();if(state.step===1){if(state.n===2){const A=state.A;setStatus('💡 det = '+A[0][0]+'·'+A[1][1]+' − '+A[0][1]+'·'+A[1][0]+' = '+state.d+'.','hint');}else setStatus('💡 Développe selon la 1re ligne : a₁₁·M₁₁ − a₁₂·M₁₂ + a₁₃·M₁₃ = '+state.d+'.','hint');document.getElementById('det_input').value=state.d;}else setStatus('💡 Inversible ⇔ det ≠ 0. Ici det = '+state.d+'.','hint');}
+  function bindDET(){
+    document.querySelectorAll('#det_toggle .mt').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#det_toggle .mt').forEach(x=>x.setAttribute('aria-selected','false'));b.setAttribute('aria-selected','true');N=+b.dataset.n;newQuest();}));
+    document.getElementById('det_validate').addEventListener('click',()=>{if(state.step!==1)return;const raw=document.getElementById('det_input').value.trim().replace('−','-');if(!/^-?\d+$/.test(raw)){setStatus('Entre un entier.','bad');return;}if(parseInt(raw,10)===state.d)step1ok();else setStatus('Pas tout à fait. Revois le calcul.','bad');});
+    document.getElementById('det_input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('det_validate').click();});
+    document.querySelectorAll('#chap-det .choice').forEach(c=>c.addEventListener('click',()=>{if(state.step!==2||state.solved)return;const inv=(state.d!==0),ans=(c.dataset.inv==='oui');if(ans===inv){c.classList.add('good');document.querySelectorAll('#chap-det .choice').forEach(x=>x.disabled=true);win();}else{c.classList.add('bad');setStatus('Rappel : inversible ⇔ det ≠ 0.','bad');}}));
+    document.getElementById('det_hint').addEventListener('click',hint);
+    document.getElementById('det_newq').addEventListener('click',newQuest);
+  }
+  return {start:function(){bindDET();newQuest();},redraw:function(){}};
+})();
+
+/* ================= CHAPITRE 5 : PRODUIT VECTORIEL ================= */
+const CROSS=(function(){
+  function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  function nz3(){let v;do{v=[ri(-4,4),ri(-4,4),ri(-4,4)];}while(v[0]===0&&v[1]===0&&v[2]===0);return v;}
+  let state;
+  function setStatus(t,c){const s=document.getElementById('cross_status');s.className='status'+(c?' '+c:'');s.innerHTML=t;}
+  function makeInputs(host,labels){host.innerHTML='';labels.forEach((lab,idx)=>{const wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px';const inp=document.createElement('input');inp.dataset.k=idx;inp.inputMode='numeric';inp.setAttribute('aria-label',lab);const l=document.createElement('span');l.textContent=lab;l.style.cssText='font-family:var(--mono);font-size:.75rem;color:var(--muted)';wrap.appendChild(inp);wrap.appendChild(l);host.appendChild(wrap);});}
+  function newQuest(){
+    const u=nz3(),v=nz3();
+    const w=[u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2], u[0]*v[1]-u[1]*v[0]];
+    state={u,v,w,solved:false};
+    document.getElementById('cross_u').innerHTML=u.join('<br>'); document.getElementById('cross_v').innerHTML=v.join('<br>');
+    makeInputs(document.getElementById('cross_inputs'),['w₁','w₂','w₃']);
+    document.getElementById('cross_prog').textContent='0'; document.getElementById('cross_win').classList.remove('show');
+    setStatus('u × v = (u₂v₃ − u₃v₂ , u₃v₁ − u₁v₃ , u₁v₂ − u₂v₁). Remplis les 3 composantes.','');
+    renderHUD();renderBoard();
+  }
+  function check(){
+    if(state.solved)return;let allFilled=true,allGood=true;
+    document.querySelectorAll('#cross_inputs input').forEach(inp=>{const k=+inp.dataset.k,raw=inp.value.trim().replace('−','-');inp.classList.remove('good','bad');if(!/^-?\d+$/.test(raw)){allFilled=false;allGood=false;return;}if(parseInt(raw,10)===state.w[k])inp.classList.add('good');else{inp.classList.add('bad');allGood=false;}});
+    document.getElementById('cross_prog').textContent=''+document.querySelectorAll('#cross_inputs input.good').length;
+    if(!allFilled){setStatus('Remplis les 3 composantes (entiers).','bad');return;}
+    if(allGood)win();else setStatus('Certaines composantes sont à revoir (en rouge).','bad');
+  }
+  function hint(){Prog.noteHint();const u=state.u,v=state.v;setStatus('💡 w₁ = u₂·v₃ − u₃·v₂ = '+u[1]+'·'+v[2]+' − '+u[2]+'·'+v[1]+' = '+state.w[0]+'.','hint');const f=document.querySelector('#cross_inputs input[data-k="0"]');if(f)f.value=state.w[0];}
+  function win(){state.solved=true;document.getElementById('cross_prog').textContent='3';const r=award(100);document.getElementById('cross_winTitle').textContent=r.leveled?('Niveau '+player.level+' atteint ! 🎉'):'Quête réussie ! 🎉';document.getElementById('cross_winSub').innerHTML='u × v = ('+state.w.join(', ')+'). <b style="color:var(--ink)">Fait :</b> ce vecteur est perpendiculaire à u et à v.';document.getElementById('cross_winXp').textContent='+'+r.gained+' XP';document.getElementById('cross_winBadge').style.display=r.badgeNow?'inline-block':'none';document.getElementById('cross_win').classList.add('show');setStatus('Bravo ! Produit vectoriel exact.','ok');Prog.onWin('cross');}
+  function bindCROSS(){document.getElementById('cross_check').addEventListener('click',check);document.getElementById('cross_hint').addEventListener('click',hint);document.getElementById('cross_newq').addEventListener('click',newQuest);}
+  return {start:function(){bindCROSS();newQuest();},redraw:function(){}};
+})();
+
+/* ================= CHAPITRE 6 : DROITES DANS L'ESPACE ================= */
+const LINE=(function(){
+  function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  function nz3(){let v;do{v=[ri(-3,3),ri(-3,3),ri(-3,3)];}while(v[0]===0&&v[1]===0&&v[2]===0);return v;}
+  let state;
+  function setStatus(t,c){const s=document.getElementById('line_status');s.className='status'+(c?' '+c:'');s.innerHTML=t;}
+  function makeInputs(host,labels){host.innerHTML='';labels.forEach((lab,idx)=>{const wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px';const inp=document.createElement('input');inp.dataset.k=idx;inp.inputMode='numeric';inp.setAttribute('aria-label',lab);const l=document.createElement('span');l.textContent=lab;l.style.cssText='font-family:var(--mono);font-size:.75rem;color:var(--muted)';wrap.appendChild(inp);wrap.appendChild(l);host.appendChild(wrap);});}
+  function newQuest(){
+    const A=[ri(-4,4),ri(-4,4),ri(-4,4)], d=nz3(); let k=ri(2,3); if(Math.random()<0.5)k=-k;
+    const P=[A[0]+k*d[0],A[1]+k*d[1],A[2]+k*d[2]];
+    const onLine=Math.random()<0.5; let t2=ri(-3,3); if(t2===0||t2===k)t2=k+1;
+    const M=[A[0]+t2*d[0],A[1]+t2*d[1],A[2]+t2*d[2]];
+    if(!onLine){const axis=ri(0,2);M[axis]+=(Math.random()<0.5?1:-1)*ri(1,2);}
+    state={A,d,k,P,M,onLine,step:1,solved:false};
+    document.getElementById('line_eqn').innerHTML='(x, y, z) = ('+A.join(', ')+') + t·('+d.join(', ')+')';
+    document.getElementById('line_tval').textContent=k;
+    makeInputs(document.getElementById('line_inputs'),['x','y','z']);
+    document.getElementById('line_M').textContent='('+M.join(', ')+')';
+    document.getElementById('line_prog').textContent='0';
+    const s1=document.getElementById('line_step1'),s2=document.getElementById('line_step2');
+    s1.classList.remove('done','locked');s2.classList.add('locked');s2.classList.remove('done');
+    document.getElementById('line_chk1').textContent='';document.getElementById('line_chk2').textContent='';
+    document.getElementById('line_validate').disabled=false;
+    document.querySelectorAll('#chap-line .choice').forEach(c=>{c.classList.remove('good','bad');c.disabled=false;});
+    document.getElementById('line_win').classList.remove('show');
+    setStatus('Étape 1 : remplace t par '+k+' dans l\'équation.','');
+    renderHUD();renderBoard();
+  }
+  function step1ok(){document.getElementById('line_chk1').textContent='✓';document.getElementById('line_step1').classList.add('done');document.querySelectorAll('#line_inputs input').forEach(i=>i.disabled=true);document.getElementById('line_validate').disabled=true;document.getElementById('line_step2').classList.remove('locked');document.getElementById('line_prog').textContent='1';state.step=2;setStatus('Exact ! Point trouvé. Maintenant : le point M est-il sur la droite ?','ok');}
+  function checkStep1(){
+    if(state.step!==1)return;let allFilled=true,allGood=true;
+    document.querySelectorAll('#line_inputs input').forEach(inp=>{const k=+inp.dataset.k,raw=inp.value.trim().replace('−','-');inp.classList.remove('good','bad');if(!/^-?\d+$/.test(raw)){allFilled=false;allGood=false;return;}if(parseInt(raw,10)===state.P[k])inp.classList.add('good');else{inp.classList.add('bad');allGood=false;}});
+    if(!allFilled){setStatus('Remplis x, y, z (entiers).','bad');return;}
+    if(allGood)step1ok();else setStatus('Revois : (x, y, z) = A + '+state.k+'·d, composante par composante.','bad');
+  }
+  function win(){state.solved=true;document.getElementById('line_chk2').textContent='✓';document.getElementById('line_step2').classList.add('done');document.getElementById('line_prog').textContent='2';const r=award(100);document.getElementById('line_winTitle').textContent=r.leveled?('Niveau '+player.level+' atteint ! 🎉'):'Quête réussie ! 🎉';document.getElementById('line_winSub').innerHTML='M '+(state.onLine?'EST sur la droite (obtenu pour un certain t).':'N\'EST PAS sur la droite (aucun t ne donne M).');document.getElementById('line_winXp').textContent='+'+r.gained+' XP';document.getElementById('line_winBadge').style.display=r.badgeNow?'inline-block':'none';document.getElementById('line_win').classList.add('show');setStatus('Bravo !','ok');Prog.onWin('line');}
+  function hint(){if(state.solved)return;Prog.noteHint();if(state.step===1){setStatus('💡 x = '+state.A[0]+' + '+state.k+'·('+state.d[0]+') = '+state.P[0]+' ; fais pareil pour y et z.','hint');const f=document.querySelector('#line_inputs input[data-k="0"]');if(f)f.value=state.P[0];}else setStatus('💡 M est sur la droite s\'il existe UN t (le même) donnant x, y et z.','hint');}
+  function bindLINE(){document.getElementById('line_validate').addEventListener('click',checkStep1);document.querySelectorAll('#chap-line .choice').forEach(c=>c.addEventListener('click',()=>{if(state.step!==2||state.solved)return;const ans=(c.dataset.on==='oui');if(ans===state.onLine){c.classList.add('good');document.querySelectorAll('#chap-line .choice').forEach(x=>x.disabled=true);win();}else{c.classList.add('bad');setStatus('Vérifie s\'il existe un t donnant les trois coordonnées de M.','bad');}}));document.getElementById('line_hint').addEventListener('click',hint);document.getElementById('line_newq').addEventListener('click',newQuest);}
+  return {start:function(){bindLINE();newQuest();},redraw:function(){}};
+})();
+
+/* ================= NAVIGATION ENTRE CHAPITRES + AIDE ================= */
+const CH={gj:GJ,vec:VEC,mat:MAT,det:DET,cross:CROSS,line:LINE};
+const CHAP_KEYS=['gj','vec','mat','det','cross','line'];
+const HELP_IDS={gj:'howtoGJ',vec:'howtoVec',mat:'howtoMat',det:'howtoDet',cross:'howtoCross',line:'howtoLine'};
+const HELP_BTNS={gj:'helpBtn',vec:'v_help',mat:'mat_help',det:'det_help',cross:'cross_help',line:'line_help'};
+function switchChap(which){
+  if(!Prog.unlocked(which)) return;
+  CHAP_KEYS.forEach(k=>{ const el=document.getElementById('chap-'+k); if(el) el.style.display=(k===which)?'block':'none'; });
+  document.querySelectorAll('.chapnode').forEach(n=>n.classList.toggle('active',n.dataset.chap===which));
+  Prog.setCurrent(which);
+  if(CH[which]&&CH[which].redraw) CH[which].redraw();
+  Prog.renderMap(); Prog.renderBanner();
+}
+function openHelp(which){
+  CHAP_KEYS.forEach(k=>{ const el=document.getElementById(HELP_IDS[k]); if(el) el.style.display=(k===which)?'block':'none'; });
+  document.getElementById('howto').classList.remove('hidden');
+}
+document.querySelectorAll('.chapnode').forEach(n=>n.addEventListener('click',()=>switchChap(n.dataset.chap)));
+CHAP_KEYS.forEach(k=>{ const b=document.getElementById(HELP_BTNS[k]); if(b) b.addEventListener('click',()=>openHelp(k)); });
+document.getElementById('startBtn').addEventListener('click',()=>document.getElementById('howto').classList.add('hidden'));
+document.getElementById('howto').addEventListener('click',e=>{ if(e.target.id==='howto') e.currentTarget.classList.add('hidden'); });
+
+/* ================= MINI-TUTORIEL GUIDÉ ================= */
+const Tut=(function(){
+  const eqmat='<div class="tut-illus"><div class="tut-eqmat"><div class="box">2x − 3y = 5<br>&nbsp;x + &nbsp;y = 4</div><span class="arrow">→</span><div class="box">&nbsp;2 &nbsp;−3 | 5<br>&nbsp;1 &nbsp;&nbsp;1 | 4</div></div></div>';
+  const tgt='<div class="tgt" style="margin:14px auto 2px"><span class="m"><b>1</b> 0 | x</span><span class="m">0 <b>1</b> | y</span></div>';
+  const cards=[
+    {ic:'🎯',t:'Le but du jeu',h:'On cherche la valeur des <b>inconnues</b> (par exemple x et y). On te présente un <b>système d\'équations</b> et tu dois le résoudre.'},
+    {ic:'🔢',t:'Équations = tableau',h:'Pour aller plus vite, on écrit le système sous forme de <b>tableau (matrice)</b>. <b>Chaque ligne du tableau = une équation.</b>'+eqmat},
+    {ic:'🏁',t:'L\'objectif',h:'Transformer le côté gauche du tableau en <b>1 sur la diagonale et 0 ailleurs</b>. La colonne de droite donnera alors directement <b>x et y</b>.'+tgt},
+    {ic:'🛠️',t:'Tes 3 outils',h:'<b>↔ Échanger</b> deux lignes &nbsp;·&nbsp; <b>× Multiplier</b> une ligne par un nombre &nbsp;·&nbsp; <b>＋ Combiner</b> (ajouter à une ligne un multiple d\'une autre).'},
+    {ic:'🧠',t:'À toi de réfléchir',h:'<b>Personne ne joue à ta place !</b> C\'est toi qui décides quelles opérations faire pour atteindre l\'objectif. Vraiment bloqué ? le bouton <b>💡 Coup de pouce</b> te souffle l\'étape suivante — mais ça te coûte une <b>⭐ étoile</b>.'},
+    {ic:'🏆',t:'Tu progresses',h:'Réussis des quêtes → <b>monte de niveau</b>, gagne des <b>⭐ étoiles</b>, et <b>débloque</b> de nouveaux chapitres. Ta progression est sauvegardée automatiquement.'}
+  ];
+  let i=0;
+  function render(){
+    const c=cards[i];
+    document.getElementById('tut_body').innerHTML='<div style="font-size:2.4rem">'+c.ic+'</div><h3 style="font-family:var(--serif);font-weight:600;font-size:1.4rem;margin:.15em 0 .4em;color:var(--ink)">'+c.t+'</h3><p style="color:var(--muted);font-size:.94rem;line-height:1.55">'+c.h+'</p>';
+    document.getElementById('tut_dots').innerHTML=cards.map((_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('');
+    document.getElementById('tut_prev').style.visibility=i===0?'hidden':'visible';
+    document.getElementById('tut_next').textContent=i===cards.length-1?'C\'est parti ! ✨':'Suivant →';
+  }
+  function open(){ i=0; render(); document.getElementById('tutorial').classList.remove('hidden'); }
+  function close(){ document.getElementById('tutorial').classList.add('hidden'); if(typeof Prog!=='undefined')Prog.markTutSeen(); }
+  document.getElementById('tut_prev').addEventListener('click',()=>{ if(i>0){i--;render();} });
+  document.getElementById('tut_next').addEventListener('click',()=>{ if(i<cards.length-1){i++;render();} else close(); });
+  return {open};
+})();
+
+/* ================= FOND « espace vectoriel » ================= */
+(function(){
+  const cv=document.getElementById('bg'),ctx=cv.getContext('2d');
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let W,H,D;const vecs=[];
+  function resize(){D=Math.min(devicePixelRatio||1,2);W=cv.width=innerWidth*D;H=cv.height=innerHeight*D;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';}
+  resize();addEventListener('resize',resize);
+  for(let i=0;i<7;i++)vecs.push({x:Math.random(),y:Math.random(),a:Math.random()*6.28,s:.0006+Math.random()*.0009,l:60+Math.random()*90});
+  function grid(){ctx.clearRect(0,0,W,H);const step=46*D;ctx.lineWidth=1;ctx.strokeStyle='rgba(212,42,28,.06)';
+    for(let x=0;x<W;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    vecs.forEach(v=>{const ox=v.x*W,oy=v.y*H,ex=ox+Math.cos(v.a)*v.l*D,ey=oy+Math.sin(v.a)*v.l*D;const g=ctx.createLinearGradient(ox,oy,ex,ey);g.addColorStop(0,'rgba(63,122,138,0)');g.addColorStop(1,'rgba(63,122,138,.35)');ctx.strokeStyle=g;ctx.lineWidth=1.6*D;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ex,ey);ctx.stroke();ctx.fillStyle='rgba(63,122,138,.5)';ctx.beginPath();ctx.arc(ex,ey,2.4*D,0,6.28);ctx.fill();if(!reduce)v.a+=v.s;});}
+  if(reduce){grid();}else{(function loop(){grid();requestAnimationFrame(loop);})();}
+})();
+
+/* ================= INIT ================= */
+Prog.load();
+renderHUD(); renderBoard();
+GJ.start(); VEC.start(); MAT.start(); DET.start(); CROSS.start(); LINE.start();
+switchChap('gj');
+Prog.renderMap(); Prog.renderBanner();
+document.getElementById('lu_ok').addEventListener('click',()=>document.getElementById('levelup').classList.remove('show'));
+
+/* écran d'accueil : choix de l'avatar + nom de code */
+(function(){
+  let chosen='🦉';
+  document.querySelectorAll('#avpick .avopt').forEach(o=>o.addEventListener('click',()=>{
+    document.querySelectorAll('#avpick .avopt').forEach(x=>x.setAttribute('aria-selected','false'));
+    o.setAttribute('aria-selected','true'); chosen=o.dataset.emoji;
+  }));
+  function begin(){
+    const nom=['Vecteur','Matrice','Scalaire','Pivot','Cosinus','Lambda','Déterminant','Sinus'],
+          adj=['Vaillant','Rusé','Cosmique','Agile','Brillant','Zen','Intrépide','Malin'];
+    let p=document.getElementById('pseudo').value.trim();
+    if(!p) p=nom[Math.floor(Math.random()*nom.length)]+' '+adj[Math.floor(Math.random()*adj.length)];
+    player.name=p;
+    document.querySelector('#avatar .face').textContent=chosen;
+    renderBoard(); Prog.save();
+    document.getElementById('welcome').classList.add('hidden');
+    if(!Prog.tutSeen()) Tut.open();
+  }
+  document.getElementById('beginBtn').addEventListener('click',begin);
+  document.getElementById('pseudo').addEventListener('keydown',e=>{ if(e.key==='Enter') begin(); });
+})();
+</script>
+
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+}
+</script>
+</body>
+</html>
