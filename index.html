@@ -627,12 +627,15 @@ function renderHUD(){
   document.getElementById('avatar').style.setProperty('--xp',pct+'%');
   document.getElementById('avLvl').textContent='N'+player.level;
 }
+/* Le nom de code est saisi par l'élève puis relu depuis localStorage : il ne doit
+   jamais être injecté tel quel dans innerHTML. */
+function escHtml(v){ return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function renderBoard(){
   const base=[['Lévi',920],['Anaïs',760],['Sofia',540],['Malik',430],['Théo',300],['Jade',210],['Noah',150]];
   let list=base.map(p=>({nm:p[0],xp:p[1],me:false})); list.push({nm:player.name||'Toi',xp:player.xp,me:true});
   list.sort((a,b)=>b.xp-a.xp);
   const host=document.getElementById('board'); host.innerHTML='';
-  list.slice(0,6).forEach((p,i)=>{ const d=document.createElement('div'); d.className='lb'+(p.me?' me':''); d.innerHTML='<span class="rk">'+(i+1)+'</span><span class="nm">'+p.nm+'</span><span class="xp">'+p.xp+' XP</span>'; host.appendChild(d); });
+  list.slice(0,6).forEach((p,i)=>{ const d=document.createElement('div'); d.className='lb'+(p.me?' me':''); d.innerHTML='<span class="rk">'+(i+1)+'</span><span class="nm">'+escHtml(p.nm)+'</span><span class="xp">'+p.xp+' XP</span>'; host.appendChild(d); });
 }
 // Attribue l'XP et met à jour niveau/badge. Renvoie {gained,leveled,badgeNow}.
 function award(gained){
