@@ -2,7 +2,7 @@
    Au premier chargement, il met en cache tous les fichiers de l'app.
    Ensuite, l'app se lance sans réseau, exactement comme une app native. */
 
-const CACHE = "algebrequest-v3";
+const CACHE = "algebrequest-v4";
 const ASSETS = [
   "index.html",
   "theme-saisonnier.js",
